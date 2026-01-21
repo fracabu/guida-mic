@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guida allo Studio - MIC 1800 Assistenti</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            color: #1e293b;
+            background: #f1f5f9;
+        }
+
+        /* LAYOUT DASHBOARD */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #7c2d12 0%, #c2410c 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 0;
+        }
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-header h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .sidebar-header p {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+        }
+        .sidebar-nav {
+            padding: 15px 0;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #fbbf24;
+        }
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-left-color: #fbbf24;
+        }
+        .sidebar-nav .icon {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+        .sidebar-section {
+            padding: 10px 20px 5px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 10px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 30px 50px;
+        }
+
+        /* SECTIONS */
+        section {
+            margin-bottom: 40px;
+            scroll-margin-top: 20px;
+        }
+        h2 {
+            color: #1e293b;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2 .badge {
+            background: #c2410c;
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        p {
+            margin-bottom: 15px;
+            color: #475569;
+        }
+        ul, ol {
+            margin: 15px 0 15px 25px;
+            color: #475569;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        strong {
+            color: #1e293b;
+        }
+
+        /* CARDS */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #c2410c;
+        }
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        /* BOXES */
+        .box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .box-orange {
+            background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+            border-left: 4px solid #c2410c;
+        }
+        .box-green {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-left: 4px solid #10b981;
+        }
+        .box-amber {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-left: 4px solid #f59e0b;
+        }
+        .box-red {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-left: 4px solid #ef4444;
+        }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #c2410c;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover {
+            background: #fff7ed;
+        }
+        .num {
+            text-align: center;
+            font-weight: 700;
+            color: #c2410c;
+        }
+        .priority-alta {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .priority-media {
+            color: #f59e0b;
+            font-weight: 500;
+        }
+
+        /* LINKS */
+        a {
+            color: #c2410c;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* PROFILE CARDS */
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-left: 4px solid #c2410c;
+        }
+        .profile-card h3 {
+            color: #1e293b;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        .profile-card .url {
+            background: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+            margin: 12px 0;
+        }
+        .profile-card .info-box {
+            padding: 14px;
+            margin-top: 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .profile-card .info-box-amber {
+            background: #fef3c7;
+            border-left: 3px solid #f59e0b;
+        }
+        .profile-card .info-box-green {
+            background: #d1fae5;
+            border-left: 3px solid #10b981;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .dashboard {
+                flex-direction: column;
+            }
+        }
+
+        @media print {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; max-width: 100%; }
+            .card, .profile-card, .box { box-shadow: none; border: 1px solid #e2e8f0; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>MIC 1800</h1>
+                <p>Guida allo Studio</p>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-section">Concorso</div>
+                <a href="#posti"><span class="icon">&#128203;</span> Posti Disponibili</a>
+                <a href="#prova"><span class="icon">&#128221;</span> Struttura Prova</a>
+                <a href="#profili"><span class="icon">&#128100;</span> Profili</a>
+                <a href="#materie"><span class="icon">&#128218;</span> Materie</a>
+
+                <div class="sidebar-section">Kit Studio</div>
+                <a href="#vigilanza"><span class="icon">&#128302;</span> Vigilanza (01)</a>
+                <a href="#tecnici"><span class="icon">&#128295;</span> Tecnici (02)</a>
+
+                <div class="sidebar-section">Preparazione</div>
+                <a href="#consigli"><span class="icon">&#128161;</span> Consigli Studio</a>
+                <a href="#strategia"><span class="icon">&#127919;</span> Strategia Esame</a>
+
+                <div class="sidebar-section">Risorse</div>
+                <a href="#banche-dati"><span class="icon">&#128202;</span> Banche Dati Quiz</a>
+                <a href="#bando"><span class="icon">&#128196;</span> Bando Ufficiale</a>
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- POSTI DISPONIBILI -->
+            <section id="posti">
+                <h2>Posti Disponibili <span class="badge">1.800 totali</span></h2>
+
+                <div class="card-grid">
+                    <div class="stat-card">
+                        <div class="number">1.500</div>
+                        <div class="label">Assistenti Vigilanza</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">300</div>
+                        <div class="label">Assistenti Tecnici</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">40</div>
+                        <div class="label">Quesiti Esame</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">60</div>
+                        <div class="label">Minuti</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STRUTTURA PROVA -->
+            <section id="prova">
+                <h2>Struttura della Prova</h2>
+
+                <p>Prova unica scritta: <strong>40 quesiti</strong> in <strong>60 minuti</strong>.</p>
+
+                <table>
+                    <tr>
+                        <th>Sezione</th>
+                        <th>Quesiti</th>
+                        <th>Peso</th>
+                    </tr>
+                    <tr>
+                        <td>Materie Comuni (a tutti i profili)</td>
+                        <td class="num">10</td>
+                        <td>25%</td>
+                    </tr>
+                    <tr>
+                        <td>Materie Specifiche del Profilo</td>
+                        <td class="num">15</td>
+                        <td>37,5%</td>
+                    </tr>
+                    <tr>
+                        <td>Logica e Ragionamento Verbale</td>
+                        <td class="num">7</td>
+                        <td>17,5%</td>
+                    </tr>
+                    <tr>
+                        <td>Quesiti Situazionali</td>
+                        <td class="num">8</td>
+                        <td>20%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTALE</strong></td>
+                        <td class="num"><strong>40</strong></td>
+                        <td><strong>100%</strong></td>
+                    </tr>
+                </table>
+
+                <div class="box box-amber">
+                    <strong>Punteggio quesiti standard:</strong> +0,75 corretta | -0,25 errata | 0 non data<br>
+                    <strong>Punteggio situazionali:</strong> variabile (piu' efficace / neutra / meno efficace)<br>
+                    <strong>Massimo prova:</strong> 30 punti | <strong>Soglia:</strong> 21/30<br>
+                    <strong>Requisito:</strong> Diploma di scuola secondaria superiore
+                </div>
+            </section>
+
+            <!-- PROFILI -->
+            <section id="profili">
+                <h2>I Due Profili</h2>
+
+                <div class="profile-card" style="border-left-color: #c2410c;">
+                    <h3>Codice 01 - Assistenti alla Vigilanza (1.500 posti)</h3>
+                    <p><strong>Mansioni:</strong> Tutela, accoglienza e vigilanza del patrimonio culturale nei luoghi della cultura (musei, aree archeologiche, biblioteche, archivi).</p>
+                    <div class="info-box info-box-green">
+                        <strong>Materie Specifiche (15 quesiti):</strong>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Diritto dei Beni Culturali (D.Lgs. 42/2004)</li>
+                            <li>Organizzazione del Ministero della Cultura</li>
+                            <li>Marketing e comunicazione culturale</li>
+                            <li>Salute e sicurezza sul lavoro</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="profile-card" style="border-left-color: #2563eb;">
+                    <h3>Codice 02 - Assistenti Tecnici (300 posti)</h3>
+                    <p><strong>Mansioni:</strong> Supporto tecnico alla tutela e valorizzazione del patrimonio culturale, collaborazione alle attivita' di scavo, catalogazione e restauro.</p>
+                    <div class="info-box info-box-amber">
+                        <strong>Materie Specifiche (15 quesiti):</strong>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Archeologia</li>
+                            <li>Storia dell'Arte</li>
+                            <li>Storia della critica d'arte</li>
+                            <li>Museologia e museografia</li>
+                            <li>Tecniche di scavo archeologico</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MATERIE COMUNI -->
+            <section id="materie">
+                <h2>Materie Comuni (10 quesiti)</h2>
+
+                <table>
+                    <tr>
+                        <th>Materia</th>
+                        <th>Quesiti stimati</th>
+                        <th>Priorita'</th>
+                    </tr>
+                    <tr>
+                        <td>Diritto Amministrativo (contratti, impiego pubblico)</td>
+                        <td class="num">2-3</td>
+                        <td class="priority-alta">ALTA</td>
+                    </tr>
+                    <tr>
+                        <td>Diritto Penale (reati contro PA)</td>
+                        <td class="num">1-2</td>
+                        <td class="priority-media">MEDIA</td>
+                    </tr>
+                    <tr>
+                        <td>Codice Amministrazione Digitale (CAD)</td>
+                        <td class="num">1-2</td>
+                        <td class="priority-media">MEDIA</td>
+                    </tr>
+                    <tr>
+                        <td>Diritto dell'Unione Europea</td>
+                        <td class="num">1-2</td>
+                        <td class="priority-media">MEDIA</td>
+                    </tr>
+                    <tr>
+                        <td>Contabilita' di Stato</td>
+                        <td class="num">1</td>
+                        <td class="priority-media">MEDIA</td>
+                    </tr>
+                    <tr>
+                        <td>Lingua Inglese A2</td>
+                        <td class="num">1-2</td>
+                        <td class="priority-media">MEDIA</td>
+                    </tr>
+                    <tr>
+                        <td>Tecnologie Informatiche</td>
+                        <td class="num">1-2</td>
+                        <td class="priority-media">MEDIA</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- KIT VIGILANZA -->
+            <section id="vigilanza">
+                <h2>Kit Studio - Vigilanza (Codice 01) <span class="badge">1.500 posti</span></h2>
+
+                <div class="profile-card" style="border-left-color: #c2410c;">
+                    <h3>Programma di Studio</h3>
+                    <p>12 moduli di studio per le materie specifiche e comuni del profilo Vigilanza.</p>
+                </div>
+
+                <div class="card-grid">
+                    <div class="stat-card" style="border-left: 4px solid #c2410c;">
+                        <div class="number" style="font-size: 1.5rem;">D.Lgs. 42/2004</div>
+                        <div class="label">Codice Beni Culturali</div>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid #c2410c;">
+                        <div class="number" style="font-size: 1.5rem;">MIC</div>
+                        <div class="label">Organizzazione Ministero</div>
+                    </div>
+                </div>
+
+                <p><strong>Materie specifiche del profilo:</strong></p>
+                <ul>
+                    <li>Diritto dei Beni Culturali (D.Lgs. 42/2004)</li>
+                    <li>Organizzazione del MIC</li>
+                    <li>Marketing e Comunicazione (L. 150/2000)</li>
+                    <li>Sicurezza sul Lavoro (D.Lgs. 81/2008)</li>
+                </ul>
+
+                <p><strong>Materie comuni:</strong></p>
+                <ul>
+                    <li>Diritto Amministrativo</li>
+                    <li>Diritto Penale PA</li>
+                    <li>Codice Amministrazione Digitale</li>
+                    <li>Diritto dell'Unione Europea</li>
+                    <li>Contabilita' Pubblica</li>
+                    <li>Logica e Ragionamento</li>
+                    <li>Quesiti Situazionali</li>
+                </ul>
+            </section>
+
+            <!-- KIT TECNICI -->
+            <section id="tecnici">
+                <h2>Kit Studio - Tecnici (Codice 02) <span class="badge">300 posti</span></h2>
+
+                <div class="profile-card" style="border-left-color: #2563eb;">
+                    <h3>Programma di Studio</h3>
+                    <p>11 moduli di studio per le materie specifiche e comuni del profilo Tecnici.</p>
+                </div>
+
+                <div class="card-grid">
+                    <div class="stat-card" style="border-left: 4px solid #2563eb;">
+                        <div class="number" style="font-size: 1.5rem;">1.999</div>
+                        <div class="label">Quiz Specifici Analizzati</div>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid #2563eb;">
+                        <div class="number" style="font-size: 1.5rem;">Harris Matrix</div>
+                        <div class="label">Stratigrafia Archeologica</div>
+                    </div>
+                </div>
+
+                <p><strong>Materie specifiche del profilo:</strong></p>
+                <ul>
+                    <li>Archeologia, Arte e Musei</li>
+                    <li>Scavo e Ricerca Archeologica</li>
+                    <li>Patrimonio Culturale Italiano</li>
+                </ul>
+
+                <div class="info-box info-box-green" style="background: #d1fae5; border-left: 3px solid #10b981; padding: 14px; margin-top: 16px; border-radius: 8px;">
+                    <strong>Nota:</strong> Il modulo Beni Culturali (D.Lgs. 42/2004) e' condiviso con il profilo Vigilanza. Le materie comuni e i moduli Logica/Situazionali sono identici a entrambi i profili.
+                </div>
+            </section>
+
+            <!-- CONSIGLI -->
+            <section id="consigli">
+                <h2>Consigli per lo Studio</h2>
+
+                <div class="box box-green">
+                    <ol>
+                        <li><strong>Parti dal D.Lgs. 42/2004.</strong> E' la normativa fondamentale per il profilo Vigilanza. Memorizza i numeri chiave: 300 metri coste, 150 metri fiumi, 60 giorni prelazione.</li>
+                        <li><strong>Conosci l'organizzazione del MIC.</strong> Soprintendenze, Direzioni Generali, musei autonomi: sapere "chi fa cosa" e' essenziale.</li>
+                        <li><strong>Quiz ogni giorno.</strong> Anche solo 30 minuti. La costanza batte lo studio intensivo dell'ultimo momento.</li>
+                        <li><strong>Riutilizza i moduli RIPAM.</strong> Per le materie comuni (Diritto Amm, CAD, Diritto UE, ecc.) i contenuti sono sovrapponibili.</li>
+                        <li><strong>Logica e situazionali = 15 domande.</strong> Non sottovalutarli. Fai tanti esercizi pratici.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- STRATEGIA -->
+            <section id="strategia">
+                <h2>Strategia Durante l'Esame</h2>
+
+                <div class="box box-orange">
+                    <ol>
+                        <li><strong>Prima passata (20 min):</strong> Rispondi SOLO alle domande che sai con certezza</li>
+                        <li><strong>Seconda passata (25 min):</strong> Ragiona sulle domande saltate, elimina opzioni</li>
+                        <li><strong>Terza passata (10 min):</strong> Decidi se tentare o lasciare bianche</li>
+                        <li><strong>Ultimi 5 min:</strong> Controlla le risposte sul foglio</li>
+                    </ol>
+                </div>
+
+                <div class="box box-red">
+                    <strong>Regola d'oro:</strong> Se non hai idea, lascia in bianco. Con -0,25 per errore, tirare a caso ti penalizza. Rispondi solo se hai eliminato almeno un'opzione.
+                </div>
+            </section>
+
+            <!-- BANCHE DATI -->
+            <section id="banche-dati">
+                <h2>Fonti Banche Dati Quiz</h2>
+
+                <div class="profile-card">
+                    <h3>Mininterno.net - Quiz MIC Vigilanza</h3>
+                    <p>Database quiz interattivo specifico per il <strong>concorso MIC 1800 Assistenti Vigilanza</strong>.</p>
+                    <div class="url">
+                        <a href="https://www.mininterno.net/beginc.asp?idc=1390" target="_blank">https://www.mininterno.net/beginc.asp?idc=1390</a>
+                    </div>
+                    <p><small>Gratuito, simulazioni e trainer disponibili.</small></p>
+                </div>
+
+                <div class="profile-card">
+                    <h3>Mininterno.net - Quiz MIC Tecnici</h3>
+                    <p>Database quiz interattivo specifico per il <strong>concorso MIC 1800 Assistenti Tecnici</strong>.</p>
+                    <div class="url">
+                        <a href="https://www.mininterno.net/beginc.asp?idc=1391" target="_blank">https://www.mininterno.net/beginc.asp?idc=1391</a>
+                    </div>
+                    <p><small>Gratuito, simulazioni e trainer disponibili.</small></p>
+                </div>
+
+                <div class="profile-card">
+                    <h3>Concorsando.it</h3>
+                    <p>Piattaforma di simulazione con filtri per materia e profilo.</p>
+                    <div class="url">
+                        <a href="https://www.concorsando.it" target="_blank">https://www.concorsando.it</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BANDO -->
+            <section id="bando">
+                <h2>Bando e Iscrizione</h2>
+
+                <div class="profile-card">
+                    <h3>Bando Ufficiale MIC 1800 Assistenti</h3>
+                    <p>Link al bando su inPA. Scadenza candidature: <strong>10 gennaio 2026</strong>.</p>
+                    <div class="info-box info-box-amber">
+                        <strong>Requisiti:</strong> Diploma di scuola secondaria superiore. Cittadinanza italiana o UE.
+                    </div>
+                </div>
+
+                <div class="box box-red" style="text-align: center;">
+                    <strong style="font-size: 1.2rem;">SCADENZA ISCRIZIONE: 10 GENNAIO 2026</strong><br>
+                    Portale inPA
+                </div>
+            </section>
+
+            <p style="text-align: center; margin-top: 40px; color: #94a3b8; font-size: 0.9rem;">
+                In bocca al lupo!
+            </p>
+
+        </main>
+    </div>
+
+    <script>
+        // Highlight active section in sidebar
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+    <!-- GoatCounter Analytics -->
+    <script data-goatcounter="https://guida-ripamm.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
