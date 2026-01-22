@@ -500,49 +500,59 @@
             flex-shrink: 0;
         }
 
-        /* RESULTS */
+        /* RESULTS DASHBOARD */
         .results-container {
             display: none;
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
         }
         .results-container.show {
             display: block;
         }
 
-        /* SCORE HERO SECTION */
-        .results-hero {
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
-            color: white;
-            padding: 40px 30px;
-            border-radius: 20px;
-            text-align: center;
-            margin-bottom: 25px;
-            position: relative;
-            overflow: hidden;
-        }
-        .results-hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        }
-        .results-hero h2 {
-            font-size: 1.3rem;
-            margin-bottom: 25px;
-            opacity: 0.9;
+        /* DASHBOARD GRID */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        /* CIRCULAR SCORE */
+        /* SCORE CARD - LEFT */
+        .score-card {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -30%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        }
+        .score-card-title {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         .score-circle-container {
             position: relative;
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 20px;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 15px;
         }
         .score-circle {
             width: 100%;
@@ -552,11 +562,11 @@
         .score-circle-bg {
             fill: none;
             stroke: rgba(255,255,255,0.2);
-            stroke-width: 12;
+            stroke-width: 10;
         }
         .score-circle-fill {
             fill: none;
-            stroke-width: 12;
+            stroke-width: 10;
             stroke-linecap: round;
             transition: stroke-dashoffset 1s ease-out;
         }
@@ -570,18 +580,19 @@
             text-align: center;
         }
         .score-number {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             display: block;
+            line-height: 1;
         }
         .score-max {
-            font-size: 1rem;
+            font-size: 0.8rem;
             opacity: 0.8;
         }
         .results-status {
-            font-size: 1.1rem;
-            padding: 10px 25px;
-            border-radius: 25px;
+            font-size: 0.9rem;
+            padding: 8px 20px;
+            border-radius: 20px;
             display: inline-block;
             font-weight: 600;
             letter-spacing: 1px;
@@ -595,58 +606,72 @@
             color: #fca5a5;
         }
 
-        /* STATS GRID */
-        .results-grid {
+        /* RIGHT PANEL */
+        .results-right {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* STATS ROW */
+        .stats-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 12px;
         }
-        .result-stat {
+        .stat-card {
             background: var(--bg-card);
-            padding: 20px 15px;
+            padding: 15px 10px;
             border-radius: 12px;
             text-align: center;
             box-shadow: 0 2px 8px var(--shadow-color);
+            border-left: 3px solid;
         }
-        .result-stat-value {
-            font-size: 2rem;
+        .stat-card.green { border-left-color: #10b981; }
+        .stat-card.red { border-left-color: #ef4444; }
+        .stat-card.gray { border-left-color: #94a3b8; }
+        .stat-card.blue { border-left-color: #4f46e5; }
+        .stat-value {
+            font-size: 1.6rem;
             font-weight: 700;
-            color: var(--text-primary);
         }
-        .result-stat-value.green { color: #10b981; }
-        .result-stat-value.red { color: #ef4444; }
-        .result-stat-value.gray { color: var(--text-muted); }
-        .result-stat-value.blue { color: #4f46e5; }
-        .result-stat-label {
-            font-size: 0.75rem;
+        .stat-card.green .stat-value { color: #10b981; }
+        .stat-card.red .stat-value { color: #ef4444; }
+        .stat-card.gray .stat-value { color: var(--text-muted); }
+        .stat-card.blue .stat-value { color: #4f46e5; }
+        .stat-label {
+            font-size: 0.7rem;
             color: var(--text-muted);
-            margin-top: 5px;
+            margin-top: 3px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* CATEGORY BREAKDOWN */
-        .category-section {
+        /* CATEGORIES GRID */
+        .categories-card {
             background: var(--bg-card);
             border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 18px;
             box-shadow: 0 2px 8px var(--shadow-color);
+            flex: 1;
         }
-        .category-section h3 {
+        .categories-card h3 {
             color: var(--text-primary);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
         .category-item {
-            margin-bottom: 18px;
-        }
-        .category-item:last-child {
-            margin-bottom: 0;
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 10px;
         }
         .category-header {
             display: flex;
@@ -657,21 +682,22 @@
         .category-name {
             font-weight: 600;
             color: var(--text-primary);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         .category-score {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
+            font-weight: 600;
         }
         .category-bar {
-            height: 10px;
+            height: 6px;
             background: var(--border-color);
-            border-radius: 5px;
+            border-radius: 3px;
             overflow: hidden;
         }
         .category-fill {
             height: 100%;
-            border-radius: 5px;
+            border-radius: 3px;
             transition: width 0.8s ease-out;
         }
         .category-fill.excellent { background: linear-gradient(90deg, #10b981, #34d399); }
@@ -679,123 +705,116 @@
         .category-fill.medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
         .category-fill.poor { background: linear-gradient(90deg, #ef4444, #f87171); }
 
+        /* BOTTOM PANELS */
+        .bottom-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
         /* RECOMMENDATIONS */
-        .recommendations-section {
+        .recommendations-card {
             background: var(--bg-card);
             border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 18px;
             box-shadow: 0 2px 8px var(--shadow-color);
         }
-        .recommendations-section h3 {
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .recommendation-item {
-            display: flex;
-            gap: 15px;
-            padding: 15px;
-            background: var(--bg-primary);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border-left: 4px solid;
-        }
-        .recommendation-item:last-child {
-            margin-bottom: 0;
-        }
-        .recommendation-item.critical {
-            border-left-color: #ef4444;
-        }
-        .recommendation-item.warning {
-            border-left-color: #f59e0b;
-        }
-        .recommendation-item.success {
-            border-left-color: #10b981;
-        }
-        .recommendation-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        .recommendation-content h4 {
+        .recommendations-card h3 {
             color: var(--text-primary);
             font-size: 0.95rem;
-            margin-bottom: 5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .recommendation-content p {
+        .recommendations-list {
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .rec-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid;
+        }
+        .rec-item:last-child { margin-bottom: 0; }
+        .rec-item.critical { border-left-color: #ef4444; }
+        .rec-item.warning { border-left-color: #f59e0b; }
+        .rec-item.success { border-left-color: #10b981; }
+        .rec-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .rec-text h4 {
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+        .rec-text p {
             color: var(--text-secondary);
-            font-size: 0.85rem;
-            line-height: 1.5;
+            font-size: 0.75rem;
+            line-height: 1.4;
             margin: 0;
         }
-        .recommendation-link {
-            display: inline-block;
-            margin-top: 8px;
+        .rec-link {
             color: var(--accent-color);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-decoration: none;
             font-weight: 500;
         }
-        .recommendation-link:hover {
-            text-decoration: underline;
-        }
+        .rec-link:hover { text-decoration: underline; }
 
-        /* REVIEW SECTION */
-        .review-section {
+        /* REVIEW CARD */
+        .review-card {
             background: var(--bg-card);
             border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 18px;
             box-shadow: 0 2px 8px var(--shadow-color);
         }
         .review-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
         .review-header h3 {
             color: var(--text-primary);
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .review-toggle {
             background: var(--accent-color);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 6px 12px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
         }
         .review-legend {
-            background: var(--bg-primary);
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
+            gap: 15px;
+            margin-bottom: 12px;
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 5px;
+            font-size: 0.7rem;
             color: var(--text-secondary);
         }
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
         }
-        .legend-color.correct { background: #dcfce7; border: 2px solid #10b981; }
-        .legend-color.wrong { background: #fee2e2; border: 2px solid #ef4444; }
-        .legend-color.skipped { background: var(--bg-card); border: 2px solid #94a3b8; }
+        .legend-dot.correct { background: #10b981; }
+        .legend-dot.wrong { background: #ef4444; }
+        .legend-dot.skipped { background: #94a3b8; }
         #reviewContainer {
             display: none;
         }
@@ -990,6 +1009,12 @@
             .social-links a { padding: 10px 16px; font-size: 0.9rem; }
             .btn-start { padding: 16px 40px; font-size: 1.1rem; width: 100%; margin-top: 10px; }
             .footer { font-size: 0.75rem; padding: 15px; }
+            /* Dashboard responsive 768 */
+            .dashboard-grid { grid-template-columns: 1fr; gap: 15px; }
+            .stats-row { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+            .stat-card { padding: 12px 8px; }
+            .stat-value { font-size: 1.4rem; }
+            .bottom-panels { grid-template-columns: 1fr; gap: 15px; }
         }
         @media (max-width: 480px) {
             .container.start-mode { padding: 12px; }
@@ -1008,6 +1033,15 @@
             .instructions h3 { font-size: 0.9rem; }
             .instructions ul { font-size: 0.85rem; margin-left: 16px; }
             .social-links a { padding: 8px 12px; font-size: 0.8rem; }
+            /* Dashboard responsive */
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .score-card { padding: 20px; }
+            .score-circle-container { width: 110px; height: 110px; }
+            .score-number { font-size: 1.8rem; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .categories-grid { grid-template-columns: 1fr; }
+            .bottom-panels { grid-template-columns: 1fr; }
+            .recommendations-list { max-height: 150px; }
             .btn-start { padding: 14px 30px; font-size: 1rem; }
         }
 
@@ -1181,76 +1215,76 @@
 
     <!-- RESULTS SCREEN -->
     <div id="resultsScreen" class="results-container">
-        <!-- HERO SCORE -->
-        <div class="results-hero">
-            <h2>Risultato della Simulazione</h2>
-            <div class="score-circle-container">
-                <svg class="score-circle" viewBox="0 0 100 100">
-                    <circle class="score-circle-bg" cx="50" cy="50" r="42"></circle>
-                    <circle class="score-circle-fill" id="scoreCircle" cx="50" cy="50" r="42"
-                            stroke-dasharray="264" stroke-dashoffset="264"></circle>
-                </svg>
-                <div class="score-value">
-                    <span class="score-number" id="finalScore">0</span>
-                    <span class="score-max">/ 30 punti</span>
+        <!-- TOP DASHBOARD -->
+        <div class="dashboard-grid">
+            <!-- LEFT: Score Card -->
+            <div class="score-card">
+                <div class="score-card-title">Punteggio Finale</div>
+                <div class="score-circle-container">
+                    <svg class="score-circle" viewBox="0 0 100 100">
+                        <circle class="score-circle-bg" cx="50" cy="50" r="42"></circle>
+                        <circle class="score-circle-fill" id="scoreCircle" cx="50" cy="50" r="42"
+                                stroke-dasharray="264" stroke-dashoffset="264"></circle>
+                    </svg>
+                    <div class="score-value">
+                        <span class="score-number" id="finalScore">0</span>
+                        <span class="score-max">/ 30</span>
+                    </div>
+                </div>
+                <div class="results-status" id="examStatus">-</div>
+            </div>
+
+            <!-- RIGHT: Stats + Categories -->
+            <div class="results-right">
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card green">
+                        <div class="stat-value" id="correctCount">0</div>
+                        <div class="stat-label">Corrette</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-value" id="wrongCount">0</div>
+                        <div class="stat-label">Errate</div>
+                    </div>
+                    <div class="stat-card gray">
+                        <div class="stat-value" id="notAnsweredCount">0</div>
+                        <div class="stat-label">Saltate</div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-value" id="timeUsed">-</div>
+                        <div class="stat-label">Tempo</div>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="categories-card">
+                    <h3>&#128202; Analisi per Categoria</h3>
+                    <div class="categories-grid" id="categoryBreakdown"></div>
                 </div>
             </div>
-            <div class="results-status" id="examStatus">-</div>
         </div>
 
-        <!-- STATS GRID -->
-        <div class="results-grid">
-            <div class="result-stat">
-                <div class="result-stat-value green" id="correctCount">0</div>
-                <div class="result-stat-label">Corrette</div>
+        <!-- BOTTOM PANELS -->
+        <div class="bottom-panels">
+            <!-- Recommendations -->
+            <div class="recommendations-card">
+                <h3>&#128161; Consigli di Studio</h3>
+                <div class="recommendations-list" id="recommendationsContainer"></div>
             </div>
-            <div class="result-stat">
-                <div class="result-stat-value red" id="wrongCount">0</div>
-                <div class="result-stat-label">Errate</div>
-            </div>
-            <div class="result-stat">
-                <div class="result-stat-value gray" id="notAnsweredCount">0</div>
-                <div class="result-stat-label">Non Risposte</div>
-            </div>
-            <div class="result-stat">
-                <div class="result-stat-value blue" id="timeUsed">-</div>
-                <div class="result-stat-label">Tempo</div>
-            </div>
-        </div>
 
-        <!-- CATEGORY BREAKDOWN -->
-        <div class="category-section">
-            <h3>&#128202; Analisi per Categoria</h3>
-            <div id="categoryBreakdown"></div>
-        </div>
-
-        <!-- RECOMMENDATIONS -->
-        <div class="recommendations-section">
-            <h3>&#128218; Consigli di Studio</h3>
-            <div id="recommendationsContainer"></div>
-        </div>
-
-        <!-- REVIEW SECTION -->
-        <div class="review-section">
-            <div class="review-header">
-                <h3>&#128269; Revisione Risposte</h3>
-                <button class="review-toggle" onclick="toggleReview()">Mostra Dettagli</button>
-            </div>
-            <div class="review-legend">
-                <div class="legend-item">
-                    <div class="legend-color correct"></div>
-                    <span>Corretta</span>
+            <!-- Review -->
+            <div class="review-card">
+                <div class="review-header">
+                    <h3>&#128269; Revisione</h3>
+                    <button class="review-toggle" onclick="toggleReview()">Mostra</button>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color wrong"></div>
-                    <span>Errata</span>
+                <div class="review-legend">
+                    <div class="legend-item"><div class="legend-dot correct"></div><span>Corretta</span></div>
+                    <div class="legend-item"><div class="legend-dot wrong"></div><span>Errata</span></div>
+                    <div class="legend-item"><div class="legend-dot skipped"></div><span>Saltata</span></div>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color skipped"></div>
-                    <span>Non risposta</span>
-                </div>
+                <div id="reviewContainer"></div>
             </div>
-            <div id="reviewContainer"></div>
         </div>
 
         <!-- ACTIONS -->
@@ -1285,91 +1319,91 @@ const questions = [
         id: 1,
         type: "comune",
         typeLabel: "Dir. Amministrativo",
-        text: "Ai sensi della L. 241/1990, il termine per la conclusione del procedimento amministrativo, qualora non diversamente stabilito, e':",
-        options: ["30 giorni", "60 giorni", "90 giorni", "45 giorni"],
+        text: "Ai sensi dell'art. 2 della L. 241/1990, entro quale termine devono concludersi i procedimenti amministrativi di competenza delle amministrazioni statali, nei casi in cui non sia previsto un termine diverso?",
+        options: ["Trenta giorni", "Sessanta giorni", "Novanta giorni", "Centoventi giorni"],
         correct: 0,
-        explanation: "L'art. 2, comma 2, della L. 241/1990 stabilisce che, nei casi in cui disposizioni di legge o regolamenti non prevedano un termine diverso, i procedimenti amministrativi devono concludersi entro 30 giorni."
+        explanation: "L'art. 2, comma 2, della L. 241/1990 stabilisce che i procedimenti amministrativi di competenza delle amministrazioni statali devono concludersi entro 30 giorni, salvo che disposizioni di legge o regolamenti non prevedano un termine diverso."
     },
     {
         id: 2,
         type: "comune",
         typeLabel: "Dir. Amministrativo",
-        text: "Il silenzio-assenso di cui all'art. 20 della L. 241/1990 si forma:",
-        options: ["Solo per i procedimenti edilizi", "Sempre dopo 90 giorni", "Solo previa richiesta esplicita", "Alla scadenza del termine senza comunicazione di diniego"],
+        text: "A chi affida l'art. 6 della L. 241/1990 il compito di curare le comunicazioni, le pubblicazioni e le notificazioni previste dalle leggi e dai regolamenti?",
+        options: ["Al dirigente dell'unita' organizzativa", "All'organo di indirizzo politico", "Al segretario generale", "Al responsabile del procedimento"],
         correct: 3,
-        explanation: "L'art. 20 della L. 241/1990 prevede che, nei procedimenti ad istanza di parte, il silenzio dell'amministrazione equivale ad accoglimento della domanda se, entro il termine di conclusione, non e' comunicato il diniego."
+        explanation: "L'art. 6, comma 1, lett. e) della L. 241/1990 attribuisce al responsabile del procedimento il compito di curare le comunicazioni, le pubblicazioni e le notificazioni previste dalle leggi e dai regolamenti."
     },
     {
         id: 3,
         type: "comune",
         typeLabel: "Dir. Amministrativo",
-        text: "L'annullamento d'ufficio di un provvedimento amministrativo illegittimo puo' essere disposto:",
-        options: ["Entro un termine ragionevole comunque non superiore a 12 mesi", "Senza limiti temporali", "Solo entro 30 giorni", "Solo dal giudice amministrativo"],
-        correct: 0,
-        explanation: "L'art. 21-nonies della L. 241/1990 prevede che l'annullamento d'ufficio puo' essere disposto entro un termine ragionevole, comunque non superiore a 12 mesi (salvo casi di false rappresentazioni)."
+        text: "Ai sensi della L. 241/1990, la motivazione del provvedimento amministrativo NON e' richiesta per:",
+        options: ["I provvedimenti di diniego", "I provvedimenti sanzionatori", "Gli atti normativi e per quelli a contenuto generale", "I provvedimenti che incidono su diritti soggettivi"],
+        correct: 2,
+        explanation: "L'art. 3, comma 2, della L. 241/1990 prevede espressamente che la motivazione non e' richiesta per gli atti normativi e per quelli a contenuto generale, in quanto questi ultimi non necessitano di una giustificazione specifica caso per caso."
     },
     {
         id: 4,
         type: "comune",
         typeLabel: "Dir. Amministrativo",
-        text: "La conferenza di servizi decisoria e' convocata quando:",
-        options: ["E' necessario acquisire solo pareri", "Il procedimento e' gia' concluso", "L'amministrazione procedente deve acquisire intese, concerti, nulla osta o assensi di altre amministrazioni", "Solo per i procedimenti in materia ambientale"],
-        correct: 2,
-        explanation: "La conferenza di servizi decisoria (art. 14, comma 2, L. 241/1990) e' convocata quando l'amministrazione procedente deve acquisire intese, concerti, nulla osta o assensi di altre amministrazioni e non li ottenga entro 30 giorni."
+        text: "Ai sensi dell'art. 21-septies della L. 241/1990, un provvedimento che manchi degli elementi essenziali e' considerato:",
+        options: ["Annullabile", "Nullo", "Irregolare", "Inefficace"],
+        correct: 1,
+        explanation: "L'art. 21-septies della L. 241/1990 stabilisce che e' nullo il provvedimento amministrativo che manca degli elementi essenziali, che e' viziato da difetto assoluto di attribuzione, che e' stato adottato in violazione o elusione del giudicato, nonche' negli altri casi espressamente previsti dalla legge."
     },
     {
         id: 5,
         type: "comune",
         typeLabel: "Dir. Penale PA",
-        text: "Ai sensi dell'art. 323 c.p., l'abuso d'ufficio si configura quando il pubblico ufficiale:",
-        options: ["Riceve denaro per ritardare un atto d'ufficio", "Intenzionalmente procura a se' o ad altri un ingiusto vantaggio patrimoniale violando specifiche regole di condotta", "Si appropria di beni della PA", "Rivela segreti d'ufficio"],
-        correct: 1,
-        explanation: "L'art. 323 c.p. (dopo la riforma del 2020) punisce il pubblico ufficiale che, violando specifiche regole di condotta espressamente previste dalla legge o da atti aventi forza di legge, procura intenzionalmente un ingiusto vantaggio patrimoniale."
+        text: "Ai sensi dell'art. 317 c.p., il pubblico ufficiale che, abusando della sua qualita' o dei suoi poteri, costringe taluno a dare o promettere indebitamente denaro o altra utilita', commette il reato di:",
+        options: ["Corruzione", "Peculato", "Concussione", "Abuso d'ufficio"],
+        correct: 2,
+        explanation: "L'art. 317 c.p. definisce la concussione come il reato commesso dal pubblico ufficiale o dall'incaricato di pubblico servizio che, abusando della sua qualita' o dei suoi poteri, costringe taluno a dare o promettere indebitamente, a lui o a un terzo, denaro o altra utilita'."
     },
     {
         id: 6,
         type: "comune",
         typeLabel: "Dir. Penale PA",
-        text: "Il reato di corruzione per l'esercizio della funzione (art. 318 c.p.) punisce il pubblico ufficiale che:",
-        options: ["Costringe qualcuno a pagare", "Rivela informazioni riservate", "Riceve denaro per l'esercizio delle sue funzioni o dei suoi poteri", "Si appropria di denaro pubblico"],
-        correct: 2,
-        explanation: "L'art. 318 c.p. punisce il pubblico ufficiale che, per l'esercizio delle sue funzioni o dei suoi poteri, indebitamente riceve, per se' o per un terzo, denaro o altra utilita' o ne accetta la promessa."
+        text: "Il reato di peculato (art. 314 c.p.) si configura quando il pubblico ufficiale:",
+        options: ["Si appropria di denaro o altra cosa mobile altrui di cui ha il possesso per ragione del suo ufficio", "Riceve denaro per compiere un atto del suo ufficio", "Omette un atto del suo ufficio", "Rivela notizie d'ufficio che devono rimanere segrete"],
+        correct: 0,
+        explanation: "Il peculato (art. 314 c.p.) si configura quando il pubblico ufficiale o l'incaricato di pubblico servizio, avendo per ragione del suo ufficio o servizio il possesso o comunque la disponibilita' di denaro o di altra cosa mobile altrui, se ne appropria."
     },
     {
         id: 7,
         type: "comune",
         typeLabel: "CAD",
-        text: "Ai sensi del CAD, la firma digitale e':",
-        options: ["Una semplice password", "Una scansione della firma autografa", "Valida solo per le email", "Un tipo particolare di firma elettronica qualificata basata su un certificato qualificato e su un sistema di chiavi crittografiche"],
+        text: "Ai sensi del D.Lgs. 82/2005 (CAD), cosa si intende per 'documento informatico'?",
+        options: ["Solo i documenti firmati digitalmente", "Solo i documenti della Pubblica Amministrazione", "I documenti cartacei scannerizzati", "Il documento elettronico che contiene la rappresentazione informatica di atti, fatti o dati giuridicamente rilevanti"],
         correct: 3,
-        explanation: "L'art. 1, comma 1, lett. s) del CAD definisce la firma digitale come un particolare tipo di firma elettronica qualificata basata su un certificato qualificato e su un sistema di chiavi crittografiche (pubblica e privata)."
+        explanation: "L'art. 1, comma 1, lett. p) del CAD definisce il documento informatico come 'il documento elettronico che contiene la rappresentazione informatica di atti, fatti o dati giuridicamente rilevanti'."
     },
     {
         id: 8,
         type: "comune",
         typeLabel: "CAD",
-        text: "Lo SPID (Sistema Pubblico di Identita' Digitale) consente di:",
-        options: ["Accedere ai servizi online della PA con un'unica identita' digitale", "Firmare digitalmente i documenti", "Inviare PEC", "Archiviare documenti nel cloud pubblico"],
-        correct: 0,
-        explanation: "Lo SPID e' il sistema di identita' digitale che permette ai cittadini di accedere ai servizi online della Pubblica Amministrazione (e dei privati aderenti) con un'unica identita' digitale."
+        text: "Ai sensi del CAD, il domicilio digitale e':",
+        options: ["L'indirizzo di posta elettronica ordinaria", "Un indirizzo elettronico eletto presso un servizio di posta elettronica certificata o altro servizio qualificato di recapito", "L'indirizzo del sito web personale", "L'indirizzo email aziendale"],
+        correct: 1,
+        explanation: "L'art. 1, comma 1, lett. n-ter) del CAD definisce il domicilio digitale come 'un indirizzo elettronico eletto presso un servizio di posta elettronica certificata o un servizio elettronico di recapito certificato qualificato'."
     },
     {
         id: 9,
         type: "comune",
         typeLabel: "Inglese A2",
-        text: "Choose the correct option: 'She _____ work at 9 o'clock every morning.'",
-        options: ["start", "starting", "started", "starts"],
+        text: "Choose the correct option: 'I _____ to the office every day by bus.'",
+        options: ["goes", "going", "gone", "go"],
         correct: 3,
-        explanation: "Con la terza persona singolare (she/he/it) al presente semplice, il verbo prende la -s finale. 'Starts' e' quindi la forma corretta."
+        explanation: "Con il soggetto 'I' (prima persona singolare) si usa la forma base del verbo 'go'. 'Goes' si usa con la terza persona singolare (he/she/it goes)."
     },
     {
         id: 10,
         type: "comune",
         typeLabel: "Informatica",
-        text: "Quale estensione identifica tipicamente un file di foglio di calcolo Excel?",
-        options: [".docx", ".pptx", ".xlsx", ".pdf"],
+        text: "Quale tra i seguenti e' un software di elaborazione testi?",
+        options: ["Microsoft Excel", "Microsoft Access", "Microsoft Word", "Microsoft PowerPoint"],
         correct: 2,
-        explanation: "L'estensione .xlsx identifica i file di Microsoft Excel (foglio di calcolo). .docx e' per Word, .pptx per PowerPoint, .pdf per i documenti Portable Document Format."
+        explanation: "Microsoft Word e' il software di elaborazione testi (word processor) della suite Microsoft Office. Excel e' un foglio di calcolo, Access e' un database, PowerPoint e' un software per presentazioni."
     },
 
     // QUESITI SPECIFICI PROFILO (11-25) - Contabilita', Dir. UE, Pubblico Impiego
@@ -1377,136 +1411,136 @@ const questions = [
         id: 11,
         type: "specifico",
         typeLabel: "Contabilita' Stato",
-        text: "Il DEF (Documento di Economia e Finanza) deve essere presentato alle Camere entro:",
-        options: ["Il 30 settembre", "Il 10 aprile", "Il 15 ottobre", "Il 31 dicembre"],
-        correct: 1,
-        explanation: "Ai sensi della L. 196/2009, il DEF deve essere presentato alle Camere entro il 10 aprile di ogni anno. Contiene gli obiettivi di politica economica e il quadro delle previsioni economiche e di finanza pubblica."
+        text: "Ai sensi della L. 196/2009, il bilancio dello Stato e' approvato:",
+        options: ["Con decreto del Presidente della Repubblica", "Con decreto del Ministro dell'Economia", "Con delibera del Consiglio dei Ministri", "Con legge"],
+        correct: 3,
+        explanation: "La L. 196/2009 (legge di contabilita' e finanza pubblica) prevede che il bilancio dello Stato sia approvato con legge dal Parlamento. Questo garantisce il controllo democratico sulla gestione delle risorse pubbliche."
     },
     {
         id: 12,
         type: "specifico",
         typeLabel: "Contabilita' Stato",
-        text: "Il principio di universalita' del bilancio pubblico implica che:",
-        options: ["Il bilancio deve essere approvato all'unanimita'", "Tutte le entrate e le spese devono essere iscritte in bilancio senza compensazioni", "Le entrate possono essere destinate a spese specifiche", "Solo le spese correnti devono essere incluse"],
-        correct: 1,
-        explanation: "Il principio di universalita' (art. 24 L. 196/2009) prevede che tutte le entrate e tutte le spese siano iscritte integralmente in bilancio, senza alcuna compensazione tra le stesse."
+        text: "Il rendiconto generale dello Stato e' presentato alle Camere entro:",
+        options: ["Il 30 giugno", "Il 30 aprile", "Il 31 luglio", "Il 30 settembre"],
+        correct: 0,
+        explanation: "Ai sensi dell'art. 35 della L. 196/2009, il rendiconto generale dello Stato e' presentato dal Ministro dell'economia e delle finanze alle Camere entro il 30 giugno dell'anno successivo a quello di riferimento."
     },
     {
         id: 13,
         type: "specifico",
         typeLabel: "Dir. Unione Europea",
-        text: "Il Consiglio dell'Unione Europea e' composto da:",
-        options: ["I capi di Stato e di governo degli Stati membri", "I presidenti dei parlamenti nazionali", "I commissari europei", "Un rappresentante di ciascun Stato membro a livello ministeriale"],
-        correct: 3,
-        explanation: "Il Consiglio dell'UE (Consiglio dei Ministri) e' composto da un rappresentante di ciascun Stato membro a livello ministeriale, abilitato a impegnare il governo dello Stato membro che rappresenta (art. 16 TUE)."
+        text: "Il Parlamento Europeo e':",
+        options: ["Nominato dai governi degli Stati membri", "Eletto a suffragio universale diretto dai cittadini dell'UE", "Composto dai capi di Stato e di governo", "Designato dalla Commissione Europea"],
+        correct: 1,
+        explanation: "Il Parlamento Europeo e' l'unica istituzione dell'UE eletta direttamente dai cittadini europei. Le elezioni si tengono ogni 5 anni a suffragio universale diretto."
     },
     {
         id: 14,
         type: "specifico",
         typeLabel: "Dir. Unione Europea",
-        text: "Il principio di sussidiarieta' nell'UE significa che:",
-        options: ["Gli Stati membri devono sempre seguire le indicazioni UE", "L'UE interviene solo se gli obiettivi non possono essere raggiunti a livello nazionale", "L'UE ha competenza esclusiva in tutte le materie", "I cittadini possono rivolgersi direttamente all'UE"],
-        correct: 1,
-        explanation: "Il principio di sussidiarieta' (art. 5 TUE) prevede che l'UE intervenga solo se e in quanto gli obiettivi dell'azione prevista non possono essere conseguiti in misura sufficiente dagli Stati membri."
+        text: "I regolamenti dell'Unione Europea sono:",
+        options: ["Vincolanti solo per gli Stati che li recepiscono", "Mere raccomandazioni", "Direttamente applicabili in tutti gli Stati membri", "Applicabili solo previa ratifica parlamentare"],
+        correct: 2,
+        explanation: "I regolamenti UE hanno portata generale, sono obbligatori in tutti i loro elementi e direttamente applicabili in ciascuno degli Stati membri, senza necessita' di atti di recepimento nazionali (art. 288 TFUE)."
     },
     {
         id: 15,
         type: "specifico",
         typeLabel: "Dir. Unione Europea",
-        text: "La Commissione Europea e':",
-        options: ["L'organo giurisdizionale dell'UE", "L'organo legislativo dell'UE", "L'organo esecutivo dell'UE con potere di iniziativa legislativa", "L'assemblea dei capi di Stato"],
+        text: "La Corte di Giustizia dell'Unione Europea ha sede a:",
+        options: ["Bruxelles", "Strasburgo", "Lussemburgo", "L'Aia"],
         correct: 2,
-        explanation: "La Commissione Europea e' l'organo esecutivo dell'UE e detiene il monopolio dell'iniziativa legislativa. Promuove l'interesse generale dell'Unione e vigila sull'applicazione dei trattati."
+        explanation: "La Corte di Giustizia dell'Unione Europea ha sede a Lussemburgo. Bruxelles ospita la Commissione e il Consiglio, Strasburgo il Parlamento Europeo per le sessioni plenarie, L'Aia la Corte Internazionale di Giustizia (ONU)."
     },
     {
         id: 16,
         type: "specifico",
         typeLabel: "Pubblico Impiego",
-        text: "Ai sensi del D.Lgs. 165/2001, i dirigenti sono responsabili:",
-        options: ["Solo del rispetto delle direttive ministeriali", "Solo della gestione del personale", "Solo dei risultati economici", "In via esclusiva dell'attivita' amministrativa, della gestione e dei relativi risultati"],
+        text: "Ai sensi del D.Lgs. 165/2001, il rapporto di lavoro dei dipendenti pubblici e' disciplinato:",
+        options: ["Esclusivamente dal diritto pubblico", "Solo dai contratti collettivi", "Esclusivamente dalle leggi speciali", "Dalle disposizioni del codice civile e dalle leggi sui rapporti di lavoro subordinato nell'impresa"],
         correct: 3,
-        explanation: "L'art. 4, comma 2, del D.Lgs. 165/2001 stabilisce che ai dirigenti spetta l'adozione degli atti e provvedimenti amministrativi e sono responsabili in via esclusiva dell'attivita' amministrativa, della gestione e dei relativi risultati."
+        explanation: "L'art. 2, comma 2, del D.Lgs. 165/2001 stabilisce che i rapporti di lavoro dei dipendenti pubblici sono disciplinati dalle disposizioni del capo I, titolo II, del libro V del codice civile e dalle leggi sui rapporti di lavoro subordinato nell'impresa (c.d. privatizzazione del pubblico impiego)."
     },
     {
         id: 17,
         type: "specifico",
         typeLabel: "Pubblico Impiego",
-        text: "Il whistleblowing nella PA (D.Lgs. 24/2023) tutela:",
-        options: ["Il dipendente che segnala illeciti di cui e' venuto a conoscenza in ragione del rapporto di lavoro", "Solo i dirigenti", "Solo chi denuncia alla magistratura", "Chi segnala anonimamente sui social media"],
+        text: "Il Codice di comportamento dei dipendenti pubblici (DPR 62/2013) prevede che il dipendente:",
+        options: ["Non debba accettare regali o altre utilita', salvo quelli di modico valore", "Possa accettare regali di qualsiasi valore", "Possa accettare regali solo dai superiori", "Debba rifiutare qualsiasi forma di cortesia"],
         correct: 0,
-        explanation: "Il D.Lgs. 24/2023 tutela il dipendente pubblico che segnala condotte illecite o irregolarita' di cui e' venuto a conoscenza in ragione del proprio rapporto di lavoro, proteggendolo da ritorsioni."
+        explanation: "L'art. 4 del DPR 62/2013 vieta al dipendente di accettare regali o altre utilita', salvo quelli di modico valore (generalmente non superiore a 150 euro) e quelli d'uso nell'ambito delle normali relazioni di cortesia."
     },
     {
         id: 18,
         type: "specifico",
         typeLabel: "Pubblico Impiego",
-        text: "La sospensione cautelare dal servizio del dipendente pubblico:",
-        options: ["Non e' mai prevista", "Richiede sempre la condanna definitiva", "Puo' essere disposta in pendenza di procedimento disciplinare o penale", "E' una sanzione disciplinare definitiva"],
-        correct: 2,
-        explanation: "La sospensione cautelare dal servizio puo' essere disposta quando il dipendente e' sottoposto a procedimento disciplinare per fatti di particolare gravita' o a procedimento penale (art. 55-ter D.Lgs. 165/2001)."
+        text: "La sanzione disciplinare del licenziamento senza preavviso si applica, tra l'altro:",
+        options: ["Per un singolo ritardo ingiustificato", "Per mancata partecipazione a una riunione", "Per uso personale del telefono d'ufficio", "Per falsa attestazione della presenza in servizio"],
+        correct: 3,
+        explanation: "L'art. 55-quater del D.Lgs. 165/2001 prevede il licenziamento disciplinare senza preavviso per falsa attestazione della presenza in servizio (es. 'badge' timbrato da altri), che costituisce anche reato."
     },
     {
         id: 19,
         type: "specifico",
         typeLabel: "Pubblico Impiego",
-        text: "Il CCNL del comparto Funzioni Centrali disciplina, tra l'altro:",
-        options: ["Solo le retribuzioni dei dirigenti", "Solo le ferie del personale", "Le competenze degli organi di governo", "Il trattamento economico e normativo dei dipendenti del comparto"],
-        correct: 3,
-        explanation: "Il CCNL del comparto Funzioni Centrali disciplina il trattamento economico e normativo del personale non dirigente delle amministrazioni centrali dello Stato, inclusi orario, ferie, malattia, sanzioni disciplinari, etc."
+        text: "Ai sensi del D.Lgs. 165/2001, l'assunzione nelle amministrazioni pubbliche avviene:",
+        options: ["Tramite procedure selettive che garantiscano imparzialita' e trasparenza", "Esclusivamente per chiamata diretta", "Su raccomandazione dei dirigenti", "Mediante sorteggio tra i candidati"],
+        correct: 0,
+        explanation: "L'art. 35 del D.Lgs. 165/2001 stabilisce che l'assunzione nelle PA avviene tramite procedure selettive conformi ai principi di economicita', celerita', imparzialita' e trasparenza, in attuazione dell'art. 97 della Costituzione."
     },
     {
         id: 20,
         type: "specifico",
         typeLabel: "Dir. Amministrativo",
-        text: "Il Responsabile della Prevenzione della Corruzione e della Trasparenza (RPCT) e' nominato:",
-        options: ["Dal Presidente della Repubblica", "Dall'ANAC", "Dall'organo di indirizzo dell'amministrazione", "Dai dipendenti con elezione"],
+        text: "Ai sensi del D.Lgs. 33/2013, le P.A. pubblicano i dati sui propri pagamenti in una sezione denominata:",
+        options: ["Albo pretorio", "Archivio corrente", "Amministrazione trasparente", "Area riservata"],
         correct: 2,
-        explanation: "Ai sensi della L. 190/2012, il RPCT e' nominato dall'organo di indirizzo politico-amministrativo di ciascuna amministrazione, di norma tra i dirigenti di ruolo in servizio."
+        explanation: "Il D.Lgs. 33/2013 (decreto trasparenza) prevede che ogni PA abbia sul proprio sito una sezione 'Amministrazione trasparente' dove pubblicare dati, informazioni e documenti previsti dalla normativa sulla trasparenza."
     },
     {
         id: 21,
         type: "specifico",
         typeLabel: "Contabilita' Stato",
-        text: "I residui passivi sono:",
-        options: ["Entrate previste ma non riscosse", "Avanzi di bilancio", "Debiti cancellati", "Spese impegnate ma non ancora pagate"],
-        correct: 3,
-        explanation: "I residui passivi sono somme impegnate nel bilancio di competenza che non sono state pagate entro la fine dell'esercizio finanziario e che pertanto vengono riportate nell'esercizio successivo."
+        text: "Il principio di annualita' del bilancio pubblico significa che:",
+        options: ["Il bilancio deve essere approvato ogni anno", "Il bilancio puo' essere modificato una volta l'anno", "Le entrate e le spese sono riferite all'anno finanziario", "I residui si annullano ogni anno"],
+        correct: 2,
+        explanation: "Il principio di annualita' del bilancio (art. 81 Cost.) comporta che le previsioni di entrata e spesa siano riferite a un periodo di tempo determinato (anno finanziario) e che il bilancio sia approvato annualmente."
     },
     {
         id: 22,
         type: "specifico",
         typeLabel: "Dir. Unione Europea",
-        text: "Il Consiglio Europeo e':",
-        options: ["Un tribunale internazionale", "Un'istituzione dell'UE composta dai capi di Stato o di governo degli Stati membri", "Un'agenzia dell'UE", "Il parlamento dell'UE"],
+        text: "Le direttive dell'Unione Europea:",
+        options: ["Sono immediatamente applicabili", "Vincolano gli Stati membri quanto al risultato da raggiungere, lasciando liberta' sulla forma e sui mezzi", "Non sono vincolanti", "Riguardano solo le istituzioni UE"],
         correct: 1,
-        explanation: "Il Consiglio Europeo (art. 15 TUE) e' composto dai capi di Stato o di governo degli Stati membri, dal suo presidente e dal presidente della Commissione. Definisce gli orientamenti e le priorita' politiche generali dell'UE."
+        explanation: "Le direttive UE (art. 288 TFUE) vincolano gli Stati membri al raggiungimento di determinati risultati, lasciando loro la scelta della forma e dei mezzi. Devono essere recepite con atti nazionali entro un termine stabilito."
     },
     {
         id: 23,
         type: "specifico",
         typeLabel: "Pubblico Impiego",
-        text: "L'orario di lavoro ordinario del dipendente pubblico a tempo pieno e':",
-        options: ["40 ore settimanali", "38 ore settimanali", "32 ore settimanali", "36 ore settimanali"],
+        text: "Il periodo di prova per i dipendenti pubblici:",
+        options: ["Non e' previsto", "Dura sempre 6 mesi", "E' deciso discrezionalmente dal dirigente", "E' disciplinato dai contratti collettivi"],
         correct: 3,
-        explanation: "L'orario di lavoro ordinario del personale del comparto Funzioni Centrali e' di 36 ore settimanali, come previsto dai CCNL di comparto."
+        explanation: "Il periodo di prova dei dipendenti pubblici e' disciplinato dai contratti collettivi nazionali di lavoro (CCNL) del comparto di appartenenza, che ne stabiliscono durata e modalita' di svolgimento."
     },
     {
         id: 24,
         type: "specifico",
         typeLabel: "Dir. Amministrativo",
-        text: "L'autocertificazione (DPR 445/2000) consente al cittadino di:",
-        options: ["Dichiarare stati, qualita' personali e fatti certificabili dalla PA", "Sostituire qualsiasi documento con una propria dichiarazione", "Evitare qualsiasi controllo successivo", "Dichiarare solo il proprio nome e cognome"],
+        text: "L'accesso civico generalizzato (D.Lgs. 33/2013) consente:",
+        options: ["L'accesso a dati e documenti detenuti dalle PA, ulteriori rispetto a quelli oggetto di pubblicazione", "L'accesso solo ai documenti gia' pubblicati", "L'accesso solo ai cittadini italiani", "L'accesso solo previa dimostrazione di un interesse qualificato"],
         correct: 0,
-        explanation: "L'autocertificazione (art. 46 DPR 445/2000) consente di sostituire certificati e atti di notorieta' con dichiarazioni sottoscritte dall'interessato, relative a stati, qualita' personali e fatti certificabili o attestabili dalla PA."
+        explanation: "L'art. 5, comma 2, del D.Lgs. 33/2013 introduce l'accesso civico generalizzato (FOIA italiano), che consente a chiunque di accedere a dati e documenti detenuti dalle PA, anche diversi da quelli oggetto di pubblicazione obbligatoria, senza motivazione."
     },
     {
         id: 25,
         type: "specifico",
         typeLabel: "Pubblico Impiego",
-        text: "La valutazione della performance individuale dei dipendenti pubblici e':",
-        options: ["Facoltativa", "Prevista solo per i dirigenti", "Obbligatoria ai sensi del D.Lgs. 150/2009", "Effettuata solo su richiesta del dipendente"],
+        text: "Il mobbing sul luogo di lavoro:",
+        options: ["E' sempre lecito se fatto dai superiori", "Non e' rilevante nel pubblico impiego", "Costituisce una condotta illecita che puo' dar luogo a responsabilita' civile e disciplinare", "E' sanzionato solo penalmente"],
         correct: 2,
-        explanation: "Il D.Lgs. 150/2009 ha introdotto l'obbligo di valutare la performance individuale di tutti i dipendenti pubblici, collegandola al sistema premiante e all'erogazione degli incentivi."
+        explanation: "Il mobbing e' una condotta illecita che viola l'art. 2087 del Codice Civile (obbligo di tutela dell'integrita' fisica e morale del lavoratore) e puo' dar luogo a responsabilita' civile, disciplinare e, in casi gravi, anche penale."
     },
 
     // QUESITI LOGICA (26-32)
@@ -1514,64 +1548,64 @@ const questions = [
         id: 26,
         type: "logica",
         typeLabel: "Ragionamento verbale",
-        text: "Individuare il termine che completa correttamente la proporzione: Medico : Paziente = Avvocato : ?",
-        options: ["Cliente", "Tribunale", "Legge", "Giudice"],
-        correct: 0,
-        explanation: "La relazione e' tra un professionista e chi usufruisce dei suoi servizi. Il medico cura il paziente, l'avvocato assiste il cliente."
+        text: "Individuare il termine che completa correttamente la proporzione: Pittore : Pennello = Scrittore : ?",
+        options: ["Libro", "Carta", "Penna", "Inchiostro"],
+        correct: 2,
+        explanation: "La relazione e' tra un professionista e il suo strumento principale di lavoro. Il pittore usa il pennello per dipingere, lo scrittore usa la penna per scrivere. Il libro e' il prodotto, non lo strumento."
     },
     {
         id: 27,
         type: "logica",
         typeLabel: "Ragionamento verbale",
-        text: "Quale parola NON appartiene al gruppo? TAVOLO, SEDIA, ARMADIO, FINESTRA, DIVANO",
-        options: ["Tavolo", "Finestra", "Armadio", "Divano"],
-        correct: 1,
-        explanation: "Tavolo, sedia, armadio e divano sono tutti mobili (arredi). La finestra e' invece un elemento architettonico/strutturale dell'edificio."
+        text: "Quale parola NON appartiene al gruppo? MELA, PERA, CAROTA, BANANA, UVA",
+        options: ["Mela", "Pera", "Carota", "Banana"],
+        correct: 2,
+        explanation: "Mela, pera, banana e uva sono tutti frutti. La carota e' invece una verdura (radice), quindi e' l'intruso nel gruppo."
     },
     {
         id: 28,
         type: "logica",
         typeLabel: "Ragionamento numerico",
-        text: "Completare la serie: 5, 10, 20, 40, ?",
-        options: ["60", "80", "70", "100"],
-        correct: 1,
-        explanation: "E' una progressione geometrica con ragione 2. Ogni numero si ottiene moltiplicando il precedente per 2: 5×2=10, 10×2=20, 20×2=40, 40×2=80."
+        text: "Completare la serie: 2, 6, 18, 54, ?",
+        options: ["108", "216", "72", "162"],
+        correct: 3,
+        explanation: "E' una progressione geometrica con ragione 3. Ogni numero si ottiene moltiplicando il precedente per 3: 2×3=6, 6×3=18, 18×3=54, 54×3=162."
     },
     {
         id: 29,
         type: "logica",
         typeLabel: "Ragionamento numerico",
-        text: "Un treno percorre 240 km in 3 ore. Qual e' la sua velocita' media?",
-        options: ["60 km/h", "70 km/h", "90 km/h", "80 km/h"],
-        correct: 3,
-        explanation: "La velocita' media si calcola dividendo lo spazio per il tempo: 240 km / 3 ore = 80 km/h."
+        text: "Se 3 operai completano un lavoro in 12 giorni, in quanti giorni lo completerebbero 6 operai?",
+        options: ["6 giorni", "24 giorni", "4 giorni", "8 giorni"],
+        correct: 0,
+        explanation: "E' un problema di proporzionalita' inversa. Se raddoppiano gli operai (da 3 a 6), il tempo si dimezza (da 12 a 6 giorni). Formula: 3×12 = 6×x, quindi x = 36/6 = 6 giorni."
     },
     {
         id: 30,
         type: "logica",
         typeLabel: "Ragionamento critico",
-        text: "Se tutti i gatti sono mammiferi e tutti i mammiferi respirano, allora:",
-        options: ["Alcuni gatti non respirano", "Tutti i gatti respirano", "Solo i gatti respirano", "Solo i mammiferi sono gatti"],
-        correct: 1,
-        explanation: "E' un sillogismo: se A (gatti) appartiene a B (mammiferi) e B ha la proprieta' C (respirare), allora A ha la proprieta' C. Quindi tutti i gatti respirano."
+        text: "Se tutti i medici sono laureati e Marco e' laureato, allora:",
+        options: ["Marco e' sicuramente un medico", "Marco non puo' essere un medico", "Tutti i laureati sono medici", "Marco potrebbe essere un medico"],
+        correct: 3,
+        explanation: "Il fatto che tutti i medici siano laureati non implica che tutti i laureati siano medici. Marco, essendo laureato, potrebbe essere un medico, ma potrebbe anche essere un ingegnere, un avvocato, ecc."
     },
     {
         id: 31,
         type: "logica",
         typeLabel: "Ragionamento verbale",
-        text: "CALDO sta a FREDDO come GIORNO sta a:",
-        options: ["Notte", "Sole", "Luce", "Sera"],
-        correct: 0,
-        explanation: "La relazione e' di antonimia (contrari). Caldo e freddo sono opposti, cosi' come giorno e notte sono opposti."
+        text: "VELOCE sta a LENTO come ALTO sta a:",
+        options: ["Grande", "Lungo", "Basso", "Stretto"],
+        correct: 2,
+        explanation: "La relazione e' di antonimia (contrari). Veloce e lento sono opposti, cosi' come alto e basso sono opposti. Grande, lungo e stretto non sono contrari di alto."
     },
     {
         id: 32,
         type: "logica",
         typeLabel: "Ragionamento numerico",
-        text: "Quale numero manca? 3, 6, 12, 24, ?",
-        options: ["36", "30", "48", "42"],
+        text: "Quale numero manca? 1, 4, 9, 16, ?, 36",
+        options: ["20", "24", "25", "30"],
         correct: 2,
-        explanation: "E' una progressione geometrica con ragione 2. Ogni numero raddoppia: 3×2=6, 6×2=12, 12×2=24, 24×2=48."
+        explanation: "La serie e' composta dai quadrati dei numeri naturali: 1²=1, 2²=4, 3²=9, 4²=16, 5²=25, 6²=36. Il numero mancante e' quindi 25."
     },
 
     // QUESITI SITUAZIONALI (33-40)
@@ -1579,121 +1613,121 @@ const questions = [
         id: 33,
         type: "situazionale",
         typeLabel: "Situazionale",
-        text: "Scopri che un nuovo software introdotto nell'ufficio ha delle funzionalita' che potrebbero migliorare il lavoro del team, ma nessuno le conosce. Come ti comporti?",
+        text: "Un collega commette ripetutamente errori che rallentano il lavoro del team. Come ti comporti?",
         options: [
-            "Non dici nulla perche' non e' compito tuo formare i colleghi",
-            "Mandi un'email al dirigente chiedendo un corso di formazione esterno",
-            "Ti proponi di organizzare una breve sessione informativa per condividere le tue scoperte",
-            "Usi le funzionalita' solo tu per distinguerti dagli altri"
+            "Segnali immediatamente il problema al dirigente",
+            "Ignori la situazione per non creare conflitti",
+            "Critichi apertamente il collega durante una riunione",
+            "Parli privatamente con il collega offrendoti di aiutarlo a migliorare"
         ],
-        correct: 2,
-        scoring: [0, 0.375, 0.75, 0],
-        explanation: "Proporsi di condividere le conoscenze dimostra spirito di squadra e proattivita'. Organizzare una sessione informativa e' un modo efficace per migliorare la produttivita' di tutto il team."
+        correct: 3,
+        scoring: [0.375, 0, 0, 0.75],
+        explanation: "L'approccio piu' efficace e' parlare privatamente con il collega, offrendo aiuto costruttivo. Questo rispetta la dignita' della persona e favorisce il miglioramento. Segnalare subito al dirigente puo' essere utile ma meno collaborativo."
     },
     {
         id: 34,
         type: "situazionale",
         typeLabel: "Situazionale",
-        text: "Un collega ti chiede di coprirlo per un ritardo, dicendoti di segnare che e' arrivato in orario. Come reagisci?",
+        text: "Un cittadino si presenta allo sportello molto agitato e alza la voce. Come reagisci?",
         options: [
-            "Rifiuti spiegando che non puoi attestare il falso",
-            "Accetti per solidarieta' tra colleghi",
-            "Lo segnali immediatamente al dirigente",
-            "Accetti ma chiedi che lui faccia lo stesso per te in futuro"
+            "Mantieni la calma, ascolti le sue ragioni e cerchi di risolvere il problema",
+            "Rispondi alzando anche tu la voce per farti rispettare",
+            "Chiami immediatamente la sicurezza",
+            "Gli dici di tornare quando si sara' calmato"
         ],
         correct: 0,
         scoring: [0.75, 0, 0.375, 0],
-        explanation: "Rifiutare educatamente e' la risposta corretta. Attestare falsamente la presenza di un collega e' un illecito disciplinare e potenzialmente un reato. La solidarieta' non giustifica comportamenti scorretti."
+        explanation: "Mantenere la calma e ascoltare e' la risposta piu' professionale. Spesso l'agitazione nasce da frustrazione: ascoltare e cercare soluzioni de-escalation la situazione. Chiamare la sicurezza e' appropriato solo in caso di pericolo reale."
     },
     {
         id: 35,
         type: "situazionale",
         typeLabel: "Situazionale",
-        text: "Durante un lavoro di gruppo, noti che un membro del team non sta contribuendo come dovrebbe. Come gestisci la situazione?",
+        text: "Ricevi istruzioni contrastanti da due superiori diversi. Come ti comporti?",
         options: [
-            "Fai tutto tu per garantire il risultato finale",
-            "Lo denunci al capo progetto senza parlare prima con lui",
-            "Lo critichi durante la prossima riunione di gruppo",
-            "Parli con il collega in privato per capire se ci sono difficolta' e come supportarlo"
+            "Esegui le istruzioni del superiore che ti e' piu' simpatico",
+            "Chiedi chiarimenti evidenziando il contrasto e cercando una soluzione condivisa",
+            "Non fai nulla aspettando che si mettano d'accordo",
+            "Esegui entrambe le istruzioni anche se contradditorie"
         ],
-        correct: 3,
-        scoring: [0.375, 0, 0, 0.75],
-        explanation: "Parlare in privato permette di comprendere eventuali difficolta' e trovare soluzioni. Potrebbe esserci un problema personale o professionale che impedisce al collega di contribuire adeguatamente."
+        correct: 1,
+        scoring: [0, 0.75, 0, 0.375],
+        explanation: "Chiedere chiarimenti evidenziando il contrasto e' l'approccio corretto. Permette di risolvere l'ambiguita' senza prendere decisioni arbitrarie. Non fare nulla o eseguire istruzioni contraddittorie sono entrambe opzioni inefficaci."
     },
     {
         id: 36,
         type: "situazionale",
         typeLabel: "Situazionale",
-        text: "Un utente si lamenta per i tempi di attesa troppo lunghi, anche se la procedura sta seguendo i tempi previsti dalla normativa. Cosa fai?",
+        text: "Ti accorgi che un collega utilizza risorse dell'ufficio per fini personali. Cosa fai?",
         options: [
-            "Gli dici che non puoi farci nulla e che deve solo aspettare",
-            "Gli spieghi gentilmente i tempi previsti dalla normativa e lo aggiorni sullo stato della pratica",
-            "Prometti che accelererai la pratica anche se non puoi farlo",
-            "Lo inviti a presentare un reclamo formale"
+            "Fai finta di niente per non creare problemi",
+            "Lo denunci immediatamente per iscritto al dirigente",
+            "Ne parli con il collega facendogli presente che il comportamento non e' corretto",
+            "Inizi anche tu a usare le risorse per fini personali"
         ],
-        correct: 1,
-        scoring: [0, 0.75, 0, 0.375],
-        explanation: "Spiegare gentilmente la normativa e aggiornare l'utente dimostra professionalita' e trasparenza. L'utente apprezzer la comunicazione chiara anche se i tempi non cambiano."
+        correct: 2,
+        scoring: [0, 0.375, 0.75, 0],
+        explanation: "Parlare prima con il collega e' l'approccio piu' costruttivo: gli dai la possibilita' di correggere il comportamento. La denuncia immediata, pur corretta, potrebbe essere sproporzionata per violazioni minori."
     },
     {
         id: 37,
         type: "situazionale",
         typeLabel: "Situazionale",
-        text: "Ti viene proposta una promozione che comporta piu' responsabilita' e un trasferimento in un'altra sede. Come ti comporti?",
+        text: "Hai una scadenza urgente ma un collega ti chiede aiuto per un suo problema. Come gestisci la situazione?",
         options: [
-            "Rifiuti immediatamente perche' non vuoi cambiare sede",
-            "Accetti immediatamente senza riflettere",
-            "Accetti solo se viene aumentato lo stipendio",
-            "Chiedi tempo per valutare l'offerta considerando tutti gli aspetti coinvolti"
+            "Rifiuti seccamente dicendo che hai altro da fare",
+            "Abbandoni il tuo lavoro per aiutare il collega",
+            "Ignori completamente la richiesta",
+            "Spieghi la tua situazione e proponi di aiutarlo appena possibile o di trovare insieme un'alternativa"
         ],
         correct: 3,
         scoring: [0, 0.375, 0, 0.75],
-        explanation: "Chiedere tempo per valutare e' la risposta piu' equilibrata. Una decisione importante come un trasferimento richiede una riflessione attenta su tutti gli aspetti personali e professionali."
+        explanation: "Comunicare la propria situazione e proporre alternative dimostra sia responsabilita' verso i propri compiti sia spirito collaborativo. Rifiutare seccamente o ignorare danneggia il rapporto; abbandonare il proprio lavoro e' irresponsabile."
     },
     {
         id: 38,
         type: "situazionale",
         typeLabel: "Situazionale",
-        text: "Durante una pausa, senti alcuni colleghi parlare male del dirigente. Come ti comporti?",
+        text: "Durante una riunione, un collega presenta come propria un'idea che avevi condiviso con lui in precedenza. Come reagisci?",
         options: [
-            "Partecipi alla conversazione aggiungendo tue critiche",
-            "Riferisci tutto al dirigente",
-            "Ti allontani senza commentare e non riferisci a nessuno",
-            "Difendi apertamente il dirigente criticando i colleghi"
+            "Non dici nulla durante la riunione ma ne parli con lui in privato dopo",
+            "Lo interrompi accusandolo pubblicamente di plagio",
+            "Abbandoni la riunione per protesta",
+            "Inizi a parlare male del collega con gli altri"
         ],
-        correct: 2,
-        scoring: [0, 0.375, 0.75, 0],
-        explanation: "Allontanarsi senza partecipare e' la scelta piu' equilibrata. Non alimenta il pettegolezzo ne' crea conflitti. Riferire al dirigente sarebbe sproporzionato per una conversazione informale."
+        correct: 0,
+        scoring: [0.75, 0, 0, 0],
+        explanation: "Affrontare la questione in privato e' la scelta piu' matura e professionale. Evita imbarazzi pubblici e permette un confronto costruttivo. Le altre opzioni creerebbero solo conflitto e un ambiente di lavoro negativo."
     },
     {
         id: 39,
         type: "situazionale",
         typeLabel: "Situazionale",
-        text: "Sei in ritardo con una consegna per cause non dipendenti da te (es. colleghi non hanno fornito dati). Come ti comporti?",
+        text: "Ti viene assegnato un compito che ritieni non sia di tua competenza. Come ti comporti?",
         options: [
-            "Informi tempestivamente il responsabile spiegando la situazione e proponendo soluzioni",
-            "Consegni in ritardo senza spiegazioni",
-            "Incolpi pubblicamente i colleghi per il ritardo",
-            "Consegni un lavoro incompleto pur di rispettare la scadenza"
+            "Rifiuti categoricamente di svolgerlo",
+            "Lo svolgi lamentandoti con tutti i colleghi",
+            "Chiedi chiarimenti al tuo superiore esponendo le tue perplessita' in modo costruttivo",
+            "Lo deleghi a un collega senza informare nessuno"
         ],
-        correct: 0,
-        scoring: [0.75, 0, 0, 0.375],
-        explanation: "Informare tempestivamente il responsabile e proporre soluzioni dimostra professionalita' e trasparenza. Permette di gestire la situazione senza creare conflitti con i colleghi."
+        correct: 2,
+        scoring: [0, 0.375, 0.75, 0],
+        explanation: "Chiedere chiarimenti in modo costruttivo permette di capire le ragioni dell'assegnazione e, eventualmente, di trovare soluzioni. Rifiutare o delegare senza autorizzazione sono comportamenti scorretti; lamentarsi crea un clima negativo."
     },
     {
         id: 40,
         type: "situazionale",
         typeLabel: "Situazionale",
-        text: "Un collega anziano fa fatica ad usare il nuovo sistema informatico e rallenta il lavoro. Come ti comporti?",
+        text: "Noti un errore in un documento gia' firmato dal tuo dirigente. Cosa fai?",
         options: [
-            "Ti lamenti con gli altri colleghi della sua lentezza",
-            "Ti offri di aiutarlo e di mostrargli le procedure con pazienza",
-            "Suggerisci al dirigente di sostituirlo con qualcuno piu' giovane",
-            "Fai il suo lavoro al posto suo senza dirgli nulla"
+            "Correggi l'errore senza dire nulla a nessuno",
+            "Non fai nulla perche' il documento e' gia' firmato",
+            "Diffondi la notizia dell'errore tra i colleghi",
+            "Segnali l'errore al dirigente proponendo come correggerlo"
         ],
-        correct: 1,
-        scoring: [0, 0.75, 0, 0.375],
-        explanation: "Offrirsi di aiutare con pazienza e' la risposta piu' professionale e umana. Valorizza l'esperienza del collega e promuove un ambiente di lavoro collaborativo e inclusivo."
+        correct: 3,
+        scoring: [0.375, 0, 0, 0.75],
+        explanation: "Segnalare l'errore al dirigente con una proposta di soluzione e' l'approccio corretto. Dimostra attenzione, rispetto della gerarchia e proattivita'. Correggere autonomamente un documento firmato o non fare nulla sono entrambi comportamenti scorretti."
     }
 ];
 
@@ -2098,12 +2132,12 @@ function renderRecommendations(stats) {
 
     recommendations.forEach(rec => {
         container.innerHTML += `
-            <div class="recommendation-item ${rec.type}">
-                <div class="recommendation-icon">${rec.icon}</div>
-                <div class="recommendation-content">
+            <div class="rec-item ${rec.type}">
+                <div class="rec-icon">${rec.icon}</div>
+                <div class="rec-text">
                     <h4>${rec.title}</h4>
                     <p>${rec.desc}</p>
-                    ${rec.link ? `<a href="${rec.link}" target="_blank" class="recommendation-link">Vai ai materiali &#8594;</a>` : ''}
+                    ${rec.link ? `<a href="${rec.link}" target="_blank" class="rec-link">Vai ai materiali &#8594;</a>` : ''}
                 </div>
             </div>
         `;
@@ -2115,10 +2149,10 @@ function toggleReview() {
     const btn = document.querySelector('.review-toggle');
     if (container.classList.contains('show')) {
         container.classList.remove('show');
-        btn.textContent = 'Mostra Dettagli';
+        btn.textContent = 'Mostra';
     } else {
         container.classList.add('show');
-        btn.textContent = 'Nascondi Dettagli';
+        btn.textContent = 'Nascondi';
     }
 }
 
