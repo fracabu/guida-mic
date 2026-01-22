@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulazione Esame MIC 1800 - Assistenti Amministrativi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #f1f5f9;
+            --bg-card: white;
+            --bg-option: white;
+            --bg-option-hover: #f8fafc;
+            --bg-option-selected: #eef2ff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --accent-color: #4f46e5;
+            --accent-light: #e0e7ff;
+            --shadow-color: rgba(0,0,0,0.08);
+            --correct-bg: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            --correct-border: #10b981;
+            --correct-text: #065f46;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --bg-option: #1e293b;
+            --bg-option-hover: #334155;
+            --bg-option-selected: #3730a3;
+            --text-primary: #f1f5f9;
+            --text-secondary: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-color: #818cf8;
+            --accent-light: #312e81;
+            --shadow-color: rgba(0,0,0,0.3);
+            --correct-bg: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            --correct-border: #10b981;
+            --correct-text: #a7f3d0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container.start-mode {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px 30px;
+        }
+        .container.exam-mode {
+            max-width: 1200px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        .container.exam-mode .header-exam {
+            display: none;
+        }
+
+        /* HEADER */
+        .header-exam {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(79, 70, 229, 0.35);
+            position: relative;
+        }
+        .header-exam h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        .header-exam h2 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* PDF BUTTON */
+        .pdf-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pdf-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* THEME TOGGLE */
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* TIMER E STATS BAR */
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        .stat-box {
+            flex: 1;
+            min-width: 120px;
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-box.timer {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            color: white;
+        }
+        .stat-box.timer.warning {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-box.timer .stat-label {
+            color: rgba(255,255,255,0.8);
+        }
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .stat-box.timer .stat-value {
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* PROGRESS BAR */
+        .progress-container {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 12px 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px var(--shadow-color);
+            flex-shrink: 0;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .progress-bar {
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5, #818cf8);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* INSTRUCTIONS */
+        .instructions {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .instructions h3 {
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .instructions ul {
+            margin-left: 18px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .instructions li {
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        .instructions .highlight {
+            background: var(--border-color);
+            color: var(--text-primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* EXAM LAYOUT - TWO COLUMNS */
+        .exam-layout {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .exam-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .exam-sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .exam-sidebar.hidden-panel {
+            display: none;
+        }
+
+        /* QUESTIONS CONTAINER */
+        #questionsContainer {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        /* QUESTION CARD */
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 22px 28px;
+            width: 100%;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            transition: all 0.2s;
+            border-left: 5px solid transparent;
+        }
+        .question-card.answered {
+            border-left-color: #10b981;
+        }
+        .question-card.current {
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.2);
+            border-left-color: #4f46e5;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .question-number {
+            background: #4f46e5;
+            color: white;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 0.9rem;
+        }
+        .question-type {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .question-type.comune { background: #dbeafe; color: #1e40af; }
+        .question-type.specifico { background: #fef3c7; color: #92400e; }
+        .question-type.logica { background: #e0e7ff; color: #4338ca; }
+        .question-type.situazionale { background: #fce7f3; color: #be185d; }
+
+        .question-text {
+            color: var(--text-primary);
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 18px;
+            font-size: 1.05rem;
+        }
+
+        /* OPTIONS */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--bg-option);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        .option:hover {
+            background: var(--bg-option-hover);
+            border-color: var(--accent-color);
+        }
+        .option.selected {
+            background: var(--bg-option-selected);
+            border-color: var(--accent-color);
+        }
+        .option.correct {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+        .option.wrong {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+        .option.show-correct {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+        .option-letter {
+            font-weight: 700;
+            color: #4f46e5;
+            margin-right: 12px;
+            min-width: 24px;
+        }
+        .option.selected .option-letter {
+            color: var(--accent-color);
+        }
+        [data-theme="dark"] .option.selected .option-letter {
+            color: #c7d2fe;
+        }
+        .option-text {
+            flex: 1;
+            color: var(--text-secondary);
+        }
+        .option-icon {
+            margin-left: auto;
+            font-size: 1.1rem;
+        }
+
+        /* EXPLANATION PANEL (RIGHT SIDEBAR) */
+        .explanation-panel {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        .explanation-panel h3 {
+            color: var(--accent-color);
+            font-size: 1rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-light);
+        }
+        .explanation-panel .no-answer {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .explanation-content {
+            overflow-y: auto;
+        }
+        .explanation-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .correct-answer-box {
+            background: var(--correct-bg);
+            border-left: 4px solid var(--correct-border);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+        }
+        .correct-answer-box .label {
+            font-size: 0.75rem;
+            color: var(--correct-border);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .correct-answer-box .answer {
+            color: var(--correct-text);
+            font-weight: 500;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.45);
+        }
+        .btn-secondary {
+            background: white;
+            color: #4f46e5;
+            border: 2px solid #4f46e5;
+        }
+        .btn-secondary:hover {
+            background: #eef2ff;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-start {
+            padding: 16px 48px;
+            font-size: 1.1rem;
+            border-radius: 14px;
+            margin-top: 10px;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 15px 0;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        /* RESULTS */
+        .results-container {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .results-container.show {
+            display: block;
+        }
+
+        /* SCORE HERO SECTION */
+        .results-hero {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .results-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        .results-hero h2 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        /* CIRCULAR SCORE */
+        .score-circle-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px;
+        }
+        .score-circle {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        .score-circle-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.2);
+            stroke-width: 12;
+        }
+        .score-circle-fill {
+            fill: none;
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+        .score-circle-fill.passed { stroke: #86efac; }
+        .score-circle-fill.failed { stroke: #fca5a5; }
+        .score-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+        }
+        .score-max {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        .results-status {
+            font-size: 1.1rem;
+            padding: 10px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .results-status.passed {
+            background: rgba(134, 239, 172, 0.3);
+            color: #86efac;
+        }
+        .results-status.failed {
+            background: rgba(252, 165, 165, 0.3);
+            color: #fca5a5;
+        }
+
+        /* STATS GRID */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .result-stat {
+            background: var(--bg-card);
+            padding: 20px 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        .result-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .result-stat-value.green { color: #10b981; }
+        .result-stat-value.red { color: #ef4444; }
+        .result-stat-value.gray { color: var(--text-muted); }
+        .result-stat-value.blue { color: #4f46e5; }
+        .result-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* CATEGORY BREAKDOWN */
+        .category-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        .category-section h3 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .category-item {
+            margin-bottom: 18px;
+        }
+        .category-item:last-child {
+            margin-bottom: 0;
+        }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .category-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        .category-score {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .category-bar {
+            height: 10px;
+            background: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .category-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.8s ease-out;
+        }
+        .category-fill.excellent { background: linear-gradient(90deg, #10b981, #34d399); }
+        .category-fill.good { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .category-fill.medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .category-fill.poor { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+        /* RECOMMENDATIONS */
+        .recommendations-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        .recommendations-section h3 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .recommendation-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+        }
+        .recommendation-item:last-child {
+            margin-bottom: 0;
+        }
+        .recommendation-item.critical {
+            border-left-color: #ef4444;
+        }
+        .recommendation-item.warning {
+            border-left-color: #f59e0b;
+        }
+        .recommendation-item.success {
+            border-left-color: #10b981;
+        }
+        .recommendation-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .recommendation-content h4 {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        .recommendation-content p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .recommendation-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: var(--accent-color);
+            font-size: 0.85rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .recommendation-link:hover {
+            text-decoration: underline;
+        }
+
+        /* REVIEW SECTION */
+        .review-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .review-header h3 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        .review-toggle {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .review-legend {
+            background: var(--bg-primary);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        .legend-color.correct { background: #dcfce7; border: 2px solid #10b981; }
+        .legend-color.wrong { background: #fee2e2; border: 2px solid #ef4444; }
+        .legend-color.skipped { background: var(--bg-card); border: 2px solid #94a3b8; }
+        #reviewContainer {
+            display: none;
+        }
+        #reviewContainer.show {
+            display: block;
+        }
+
+        /* ACTION BUTTONS */
+        .results-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .score-circle-container {
+                width: 150px;
+                height: 150px;
+            }
+            .score-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* START SCREEN */
+        .start-screen {
+            text-align: center;
+            padding: 0;
+        }
+        .start-screen h2 {
+            display: none;
+        }
+        .exam-info {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+        .exam-info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .exam-info-item {
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--bg-option);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+        .exam-info-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+        .exam-info-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 12px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .start-mode .footer {
+            padding: 10px;
+            margin-top: 8px;
+        }
+        .exam-mode .footer {
+            display: none;
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body { background: white; }
+            .stats-bar, .action-bar, .question-nav, .btn, .pdf-btn { display: none !important; }
+            .container { max-width: 100%; padding: 0; }
+            .container.start-mode { min-height: auto; }
+            .question-card {
+                box-shadow: none;
+                border: 1px solid #e2e8f0;
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+            }
+            .header-exam {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin-bottom: 20px;
+            }
+            .exam-info {
+                box-shadow: none;
+                border: 1px solid #e2e8f0;
+            }
+            .instructions {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            #examScreen, .exam-layout, .exam-sidebar {
+                display: none !important;
+            }
+            #printContainer {
+                display: block !important;
+            }
+        }
+
+        #printContainer {
+            display: none;
+        }
+
+        /* SOURCES BOX - hidden in start screen, shown on info click */
+        .sources-box {
+            display: none;
+        }
+
+        /* SOCIAL LINKS */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            background: #eef2ff;
+            color: #4f46e5;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .social-links a:hover {
+            background: #4f46e5;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .exam-sidebar {
+                width: 100%;
+                order: 2;
+            }
+            .exam-layout {
+                flex-direction: column;
+            }
+            .container {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            html, body { height: auto; min-height: 100%; overflow-y: auto !important; }
+            .container { padding: 12px; }
+            .container.start-mode { padding: 15px; min-height: auto; height: auto; justify-content: flex-start; padding-top: 20px; }
+            .container.exam-mode { height: auto; min-height: 100vh; overflow: visible; justify-content: flex-start; padding-top: 15px; }
+            .exam-layout { overflow: visible; flex-direction: column; }
+            .exam-main { overflow: visible; }
+            .exam-sidebar { width: 100%; margin-top: 15px; }
+            #questionsContainer { overflow: visible; }
+            .header-exam { padding: 16px; padding-top: 45px; margin-bottom: 16px; }
+            .header-exam h1 { font-size: 1.2rem; }
+            .header-exam h2 { font-size: 0.9rem; }
+            .pdf-btn { position: absolute; top: 10px; right: 10px; padding: 6px 10px; font-size: 0.75rem; }
+            .exam-info { padding: 16px; }
+            .exam-info-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .exam-info-item { padding: 14px 10px; }
+            .exam-info-value { font-size: 1.8rem; }
+            .exam-info-label { font-size: 0.8rem; }
+            .instructions { padding: 14px 16px; }
+            .instructions h3 { font-size: 1rem; }
+            .instructions ul { font-size: 0.9rem; }
+            .social-links { gap: 10px; flex-wrap: wrap; justify-content: center; }
+            .social-links a { padding: 10px 16px; font-size: 0.9rem; }
+            .btn-start { padding: 16px 40px; font-size: 1.1rem; width: 100%; margin-top: 10px; }
+            .footer { font-size: 0.75rem; padding: 15px; }
+        }
+        @media (max-width: 480px) {
+            .container.start-mode { padding: 12px; }
+            .header-exam { padding: 14px; padding-top: 45px; margin-bottom: 12px; }
+            .header-exam h1 { font-size: 1rem; }
+            .header-exam h2 { font-size: 0.8rem; }
+            .pdf-btn { padding: 5px 8px; font-size: 0.7rem; }
+            .theme-toggle { padding: 5px 8px; font-size: 0.7rem; top: 10px; left: 10px; }
+            .exam-info { padding: 12px; }
+            .exam-info-grid { gap: 8px; }
+            .exam-info-item { padding: 10px 8px; }
+            .exam-info-value { font-size: 1.5rem; }
+            .exam-info-label { font-size: 0.7rem; }
+            .instructions { padding: 12px; }
+            .instructions h3 { font-size: 0.9rem; }
+            .instructions ul { font-size: 0.85rem; margin-left: 16px; }
+            .social-links a { padding: 8px 12px; font-size: 0.8rem; }
+            .btn-start { padding: 14px 30px; font-size: 1rem; }
+        }
+
+        /* HIDDEN */
+        .hidden { display: none !important; }
+
+        /* PAUSE BUTTON */
+        .pause-btn {
+            margin-top: 6px;
+            padding: 5px 12px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pause-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+        .pause-btn.paused {
+            background: rgba(255,255,255,0.9);
+            color: #4f46e5;
+            border-color: white;
+        }
+
+        /* PAUSE OVERLAY */
+        .pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .pause-overlay .pause-message {
+            background: white;
+            padding: 40px 60px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .pause-overlay h2 {
+            color: #4f46e5;
+            margin-bottom: 10px;
+        }
+        .pause-overlay p {
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container start-mode" id="mainContainer">
+    <!-- HEADER -->
+    <div class="header-exam">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">&#9790; Dark</button>
+        <button class="pdf-btn" onclick="printQuiz()">Stampa PDF</button>
+        <h1>CONCORSO MIC 1800 ASSISTENTI</h1>
+        <h2>Simulazione Prova Scritta - Modulo 2</h2>
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="startScreen" class="start-screen">
+        <div class="exam-info">
+            <div class="exam-info-grid">
+                <div class="exam-info-item">
+                    <div class="exam-info-value">40</div>
+                    <div class="exam-info-label">Quesiti</div>
+                </div>
+                <div class="exam-info-item">
+                    <div class="exam-info-value">60</div>
+                    <div class="exam-info-label">Minuti</div>
+                </div>
+                <div class="exam-info-item">
+                    <div class="exam-info-value">30</div>
+                    <div class="exam-info-label">Punti Max</div>
+                </div>
+                <div class="exam-info-item">
+                    <div class="exam-info-value">21</div>
+                    <div class="exam-info-label">Soglia</div>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <h3>Punteggio RIPAM</h3>
+                <ul>
+                    <li><span class="highlight">Quesiti 1-32:</span> Corretta +0,75 | Errata -0,25 | Non data 0</li>
+                    <li><span class="highlight">Quesiti 33-40:</span> Piu' efficace +0,75 | Neutra +0,375 | Meno efficace 0</li>
+                </ul>
+            </div>
+
+            <div class="social-links">
+                <a href="https://t.me/ripam3997" target="_blank">Telegram</a>
+                <a href="https://www.facebook.com/groups/ripam3997" target="_blank">Facebook</a>
+                <a href="index.html">Guida RIPAM</a>
+            </div>
+        </div>
+
+        <button class="btn btn-primary btn-start" onclick="startExam()">
+            Inizia Simulazione
+        </button>
+    </div>
+
+    <!-- EXAM SCREEN -->
+    <div id="examScreen" class="hidden">
+        <!-- STATS BAR -->
+        <div class="stats-bar">
+            <div class="stat-box timer" id="timerBox">
+                <div class="stat-label">Tempo Rimasto</div>
+                <div class="stat-value" id="timer">60:00</div>
+                <button class="pause-btn" id="pauseBtn" onclick="togglePause()">&#10074;&#10074; Pausa</button>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Risposte</div>
+                <div class="stat-value" id="answeredCount">0/40</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Non Risposte</div>
+                <div class="stat-value" id="skippedCount">40</div>
+            </div>
+        </div>
+
+        <!-- TWO COLUMN LAYOUT -->
+        <div class="exam-layout">
+            <!-- LEFT: Question -->
+            <div class="exam-main">
+                <!-- PROGRESS -->
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span>Avanzamento</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- QUESTIONS CONTAINER -->
+                <div id="questionsContainer"></div>
+
+                <!-- ACTION BAR -->
+                <div class="action-bar">
+                    <button class="btn btn-secondary" onclick="previousQuestion()">Precedente</button>
+                    <button class="btn btn-secondary" onclick="nextQuestion()">Successiva</button>
+                    <button class="btn btn-primary" onclick="submitExam()">Consegna Esame</button>
+                </div>
+            </div>
+
+            <!-- RIGHT: Explanation Panel -->
+            <div class="exam-sidebar" id="explanationSidebar">
+                <div class="explanation-panel">
+                    <h3>Spiegazione</h3>
+                    <div id="explanationContent">
+                        <p class="no-answer">Seleziona una risposta per vedere la spiegazione</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="resultsScreen" class="results-container">
+        <!-- HERO SCORE -->
+        <div class="results-hero">
+            <h2>Risultato della Simulazione</h2>
+            <div class="score-circle-container">
+                <svg class="score-circle" viewBox="0 0 100 100">
+                    <circle class="score-circle-bg" cx="50" cy="50" r="42"></circle>
+                    <circle class="score-circle-fill" id="scoreCircle" cx="50" cy="50" r="42"
+                            stroke-dasharray="264" stroke-dashoffset="264"></circle>
+                </svg>
+                <div class="score-value">
+                    <span class="score-number" id="finalScore">0</span>
+                    <span class="score-max">/ 30 punti</span>
+                </div>
+            </div>
+            <div class="results-status" id="examStatus">-</div>
+        </div>
+
+        <!-- STATS GRID -->
+        <div class="results-grid">
+            <div class="result-stat">
+                <div class="result-stat-value green" id="correctCount">0</div>
+                <div class="result-stat-label">Corrette</div>
+            </div>
+            <div class="result-stat">
+                <div class="result-stat-value red" id="wrongCount">0</div>
+                <div class="result-stat-label">Errate</div>
+            </div>
+            <div class="result-stat">
+                <div class="result-stat-value gray" id="notAnsweredCount">0</div>
+                <div class="result-stat-label">Non Risposte</div>
+            </div>
+            <div class="result-stat">
+                <div class="result-stat-value blue" id="timeUsed">-</div>
+                <div class="result-stat-label">Tempo</div>
+            </div>
+        </div>
+
+        <!-- CATEGORY BREAKDOWN -->
+        <div class="category-section">
+            <h3>&#128202; Analisi per Categoria</h3>
+            <div id="categoryBreakdown"></div>
+        </div>
+
+        <!-- RECOMMENDATIONS -->
+        <div class="recommendations-section">
+            <h3>&#128218; Consigli di Studio</h3>
+            <div id="recommendationsContainer"></div>
+        </div>
+
+        <!-- REVIEW SECTION -->
+        <div class="review-section">
+            <div class="review-header">
+                <h3>&#128269; Revisione Risposte</h3>
+                <button class="review-toggle" onclick="toggleReview()">Mostra Dettagli</button>
+            </div>
+            <div class="review-legend">
+                <div class="legend-item">
+                    <div class="legend-color correct"></div>
+                    <span>Corretta</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color wrong"></div>
+                    <span>Errata</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color skipped"></div>
+                    <span>Non risposta</span>
+                </div>
+            </div>
+            <div id="reviewContainer"></div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="results-actions">
+            <button class="btn btn-secondary" onclick="window.print()">&#128424; Stampa</button>
+            <button class="btn btn-primary" onclick="restartExam()">&#128260; Nuova Simulazione</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        RIPAM STUDIO - Simulatore basato sul Bando Ufficiale (Art. 6)
+    </div>
+</div>
+
+<!-- PAUSE OVERLAY -->
+<div id="pauseOverlay" class="pause-overlay hidden">
+    <div class="pause-message">
+        <h2>PAUSA</h2>
+        <p>Il timer e' in pausa</p>
+        <button class="btn btn-primary" onclick="togglePause()">Riprendi</button>
+    </div>
+</div>
+
+<!-- PRINT CONTAINER -->
+<div id="printContainer"></div>
+
+<script>
+// ==================== QUIZ DATA ====================
+const questions = [
+    // QUESITI COMUNI (1-10) - Diritto Amministrativo, Penale, CAD, etc.
+    {
+        id: 1,
+        type: "comune",
+        typeLabel: "Dir. Amministrativo",
+        text: "Ai sensi della L. 241/1990, il termine per la conclusione del procedimento amministrativo, qualora non diversamente stabilito, e':",
+        options: ["30 giorni", "60 giorni", "90 giorni", "45 giorni"],
+        correct: 0,
+        explanation: "L'art. 2, comma 2, della L. 241/1990 stabilisce che, nei casi in cui disposizioni di legge o regolamenti non prevedano un termine diverso, i procedimenti amministrativi devono concludersi entro 30 giorni."
+    },
+    {
+        id: 2,
+        type: "comune",
+        typeLabel: "Dir. Amministrativo",
+        text: "Il silenzio-assenso di cui all'art. 20 della L. 241/1990 si forma:",
+        options: ["Solo per i procedimenti edilizi", "Sempre dopo 90 giorni", "Solo previa richiesta esplicita", "Alla scadenza del termine senza comunicazione di diniego"],
+        correct: 3,
+        explanation: "L'art. 20 della L. 241/1990 prevede che, nei procedimenti ad istanza di parte, il silenzio dell'amministrazione equivale ad accoglimento della domanda se, entro il termine di conclusione, non e' comunicato il diniego."
+    },
+    {
+        id: 3,
+        type: "comune",
+        typeLabel: "Dir. Amministrativo",
+        text: "L'annullamento d'ufficio di un provvedimento amministrativo illegittimo puo' essere disposto:",
+        options: ["Entro un termine ragionevole comunque non superiore a 12 mesi", "Senza limiti temporali", "Solo entro 30 giorni", "Solo dal giudice amministrativo"],
+        correct: 0,
+        explanation: "L'art. 21-nonies della L. 241/1990 prevede che l'annullamento d'ufficio puo' essere disposto entro un termine ragionevole, comunque non superiore a 12 mesi (salvo casi di false rappresentazioni)."
+    },
+    {
+        id: 4,
+        type: "comune",
+        typeLabel: "Dir. Amministrativo",
+        text: "La conferenza di servizi decisoria e' convocata quando:",
+        options: ["E' necessario acquisire solo pareri", "Il procedimento e' gia' concluso", "L'amministrazione procedente deve acquisire intese, concerti, nulla osta o assensi di altre amministrazioni", "Solo per i procedimenti in materia ambientale"],
+        correct: 2,
+        explanation: "La conferenza di servizi decisoria (art. 14, comma 2, L. 241/1990) e' convocata quando l'amministrazione procedente deve acquisire intese, concerti, nulla osta o assensi di altre amministrazioni e non li ottenga entro 30 giorni."
+    },
+    {
+        id: 5,
+        type: "comune",
+        typeLabel: "Dir. Penale PA",
+        text: "Ai sensi dell'art. 323 c.p., l'abuso d'ufficio si configura quando il pubblico ufficiale:",
+        options: ["Riceve denaro per ritardare un atto d'ufficio", "Intenzionalmente procura a se' o ad altri un ingiusto vantaggio patrimoniale violando specifiche regole di condotta", "Si appropria di beni della PA", "Rivela segreti d'ufficio"],
+        correct: 1,
+        explanation: "L'art. 323 c.p. (dopo la riforma del 2020) punisce il pubblico ufficiale che, violando specifiche regole di condotta espressamente previste dalla legge o da atti aventi forza di legge, procura intenzionalmente un ingiusto vantaggio patrimoniale."
+    },
+    {
+        id: 6,
+        type: "comune",
+        typeLabel: "Dir. Penale PA",
+        text: "Il reato di corruzione per l'esercizio della funzione (art. 318 c.p.) punisce il pubblico ufficiale che:",
+        options: ["Costringe qualcuno a pagare", "Rivela informazioni riservate", "Riceve denaro per l'esercizio delle sue funzioni o dei suoi poteri", "Si appropria di denaro pubblico"],
+        correct: 2,
+        explanation: "L'art. 318 c.p. punisce il pubblico ufficiale che, per l'esercizio delle sue funzioni o dei suoi poteri, indebitamente riceve, per se' o per un terzo, denaro o altra utilita' o ne accetta la promessa."
+    },
+    {
+        id: 7,
+        type: "comune",
+        typeLabel: "CAD",
+        text: "Ai sensi del CAD, la firma digitale e':",
+        options: ["Una semplice password", "Una scansione della firma autografa", "Valida solo per le email", "Un tipo particolare di firma elettronica qualificata basata su un certificato qualificato e su un sistema di chiavi crittografiche"],
+        correct: 3,
+        explanation: "L'art. 1, comma 1, lett. s) del CAD definisce la firma digitale come un particolare tipo di firma elettronica qualificata basata su un certificato qualificato e su un sistema di chiavi crittografiche (pubblica e privata)."
+    },
+    {
+        id: 8,
+        type: "comune",
+        typeLabel: "CAD",
+        text: "Lo SPID (Sistema Pubblico di Identita' Digitale) consente di:",
+        options: ["Accedere ai servizi online della PA con un'unica identita' digitale", "Firmare digitalmente i documenti", "Inviare PEC", "Archiviare documenti nel cloud pubblico"],
+        correct: 0,
+        explanation: "Lo SPID e' il sistema di identita' digitale che permette ai cittadini di accedere ai servizi online della Pubblica Amministrazione (e dei privati aderenti) con un'unica identita' digitale."
+    },
+    {
+        id: 9,
+        type: "comune",
+        typeLabel: "Inglese A2",
+        text: "Choose the correct option: 'She _____ work at 9 o'clock every morning.'",
+        options: ["start", "starting", "started", "starts"],
+        correct: 3,
+        explanation: "Con la terza persona singolare (she/he/it) al presente semplice, il verbo prende la -s finale. 'Starts' e' quindi la forma corretta."
+    },
+    {
+        id: 10,
+        type: "comune",
+        typeLabel: "Informatica",
+        text: "Quale estensione identifica tipicamente un file di foglio di calcolo Excel?",
+        options: [".docx", ".pptx", ".xlsx", ".pdf"],
+        correct: 2,
+        explanation: "L'estensione .xlsx identifica i file di Microsoft Excel (foglio di calcolo). .docx e' per Word, .pptx per PowerPoint, .pdf per i documenti Portable Document Format."
+    },
+
+    // QUESITI SPECIFICI PROFILO (11-25) - Contabilita', Dir. UE, Pubblico Impiego
+    {
+        id: 11,
+        type: "specifico",
+        typeLabel: "Contabilita' Stato",
+        text: "Il DEF (Documento di Economia e Finanza) deve essere presentato alle Camere entro:",
+        options: ["Il 30 settembre", "Il 10 aprile", "Il 15 ottobre", "Il 31 dicembre"],
+        correct: 1,
+        explanation: "Ai sensi della L. 196/2009, il DEF deve essere presentato alle Camere entro il 10 aprile di ogni anno. Contiene gli obiettivi di politica economica e il quadro delle previsioni economiche e di finanza pubblica."
+    },
+    {
+        id: 12,
+        type: "specifico",
+        typeLabel: "Contabilita' Stato",
+        text: "Il principio di universalita' del bilancio pubblico implica che:",
+        options: ["Il bilancio deve essere approvato all'unanimita'", "Tutte le entrate e le spese devono essere iscritte in bilancio senza compensazioni", "Le entrate possono essere destinate a spese specifiche", "Solo le spese correnti devono essere incluse"],
+        correct: 1,
+        explanation: "Il principio di universalita' (art. 24 L. 196/2009) prevede che tutte le entrate e tutte le spese siano iscritte integralmente in bilancio, senza alcuna compensazione tra le stesse."
+    },
+    {
+        id: 13,
+        type: "specifico",
+        typeLabel: "Dir. Unione Europea",
+        text: "Il Consiglio dell'Unione Europea e' composto da:",
+        options: ["I capi di Stato e di governo degli Stati membri", "I presidenti dei parlamenti nazionali", "I commissari europei", "Un rappresentante di ciascun Stato membro a livello ministeriale"],
+        correct: 3,
+        explanation: "Il Consiglio dell'UE (Consiglio dei Ministri) e' composto da un rappresentante di ciascun Stato membro a livello ministeriale, abilitato a impegnare il governo dello Stato membro che rappresenta (art. 16 TUE)."
+    },
+    {
+        id: 14,
+        type: "specifico",
+        typeLabel: "Dir. Unione Europea",
+        text: "Il principio di sussidiarieta' nell'UE significa che:",
+        options: ["Gli Stati membri devono sempre seguire le indicazioni UE", "L'UE interviene solo se gli obiettivi non possono essere raggiunti a livello nazionale", "L'UE ha competenza esclusiva in tutte le materie", "I cittadini possono rivolgersi direttamente all'UE"],
+        correct: 1,
+        explanation: "Il principio di sussidiarieta' (art. 5 TUE) prevede che l'UE intervenga solo se e in quanto gli obiettivi dell'azione prevista non possono essere conseguiti in misura sufficiente dagli Stati membri."
+    },
+    {
+        id: 15,
+        type: "specifico",
+        typeLabel: "Dir. Unione Europea",
+        text: "La Commissione Europea e':",
+        options: ["L'organo giurisdizionale dell'UE", "L'organo legislativo dell'UE", "L'organo esecutivo dell'UE con potere di iniziativa legislativa", "L'assemblea dei capi di Stato"],
+        correct: 2,
+        explanation: "La Commissione Europea e' l'organo esecutivo dell'UE e detiene il monopolio dell'iniziativa legislativa. Promuove l'interesse generale dell'Unione e vigila sull'applicazione dei trattati."
+    },
+    {
+        id: 16,
+        type: "specifico",
+        typeLabel: "Pubblico Impiego",
+        text: "Ai sensi del D.Lgs. 165/2001, i dirigenti sono responsabili:",
+        options: ["Solo del rispetto delle direttive ministeriali", "Solo della gestione del personale", "Solo dei risultati economici", "In via esclusiva dell'attivita' amministrativa, della gestione e dei relativi risultati"],
+        correct: 3,
+        explanation: "L'art. 4, comma 2, del D.Lgs. 165/2001 stabilisce che ai dirigenti spetta l'adozione degli atti e provvedimenti amministrativi e sono responsabili in via esclusiva dell'attivita' amministrativa, della gestione e dei relativi risultati."
+    },
+    {
+        id: 17,
+        type: "specifico",
+        typeLabel: "Pubblico Impiego",
+        text: "Il whistleblowing nella PA (D.Lgs. 24/2023) tutela:",
+        options: ["Il dipendente che segnala illeciti di cui e' venuto a conoscenza in ragione del rapporto di lavoro", "Solo i dirigenti", "Solo chi denuncia alla magistratura", "Chi segnala anonimamente sui social media"],
+        correct: 0,
+        explanation: "Il D.Lgs. 24/2023 tutela il dipendente pubblico che segnala condotte illecite o irregolarita' di cui e' venuto a conoscenza in ragione del proprio rapporto di lavoro, proteggendolo da ritorsioni."
+    },
+    {
+        id: 18,
+        type: "specifico",
+        typeLabel: "Pubblico Impiego",
+        text: "La sospensione cautelare dal servizio del dipendente pubblico:",
+        options: ["Non e' mai prevista", "Richiede sempre la condanna definitiva", "Puo' essere disposta in pendenza di procedimento disciplinare o penale", "E' una sanzione disciplinare definitiva"],
+        correct: 2,
+        explanation: "La sospensione cautelare dal servizio puo' essere disposta quando il dipendente e' sottoposto a procedimento disciplinare per fatti di particolare gravita' o a procedimento penale (art. 55-ter D.Lgs. 165/2001)."
+    },
+    {
+        id: 19,
+        type: "specifico",
+        typeLabel: "Pubblico Impiego",
+        text: "Il CCNL del comparto Funzioni Centrali disciplina, tra l'altro:",
+        options: ["Solo le retribuzioni dei dirigenti", "Solo le ferie del personale", "Le competenze degli organi di governo", "Il trattamento economico e normativo dei dipendenti del comparto"],
+        correct: 3,
+        explanation: "Il CCNL del comparto Funzioni Centrali disciplina il trattamento economico e normativo del personale non dirigente delle amministrazioni centrali dello Stato, inclusi orario, ferie, malattia, sanzioni disciplinari, etc."
+    },
+    {
+        id: 20,
+        type: "specifico",
+        typeLabel: "Dir. Amministrativo",
+        text: "Il Responsabile della Prevenzione della Corruzione e della Trasparenza (RPCT) e' nominato:",
+        options: ["Dal Presidente della Repubblica", "Dall'ANAC", "Dall'organo di indirizzo dell'amministrazione", "Dai dipendenti con elezione"],
+        correct: 2,
+        explanation: "Ai sensi della L. 190/2012, il RPCT e' nominato dall'organo di indirizzo politico-amministrativo di ciascuna amministrazione, di norma tra i dirigenti di ruolo in servizio."
+    },
+    {
+        id: 21,
+        type: "specifico",
+        typeLabel: "Contabilita' Stato",
+        text: "I residui passivi sono:",
+        options: ["Entrate previste ma non riscosse", "Avanzi di bilancio", "Debiti cancellati", "Spese impegnate ma non ancora pagate"],
+        correct: 3,
+        explanation: "I residui passivi sono somme impegnate nel bilancio di competenza che non sono state pagate entro la fine dell'esercizio finanziario e che pertanto vengono riportate nell'esercizio successivo."
+    },
+    {
+        id: 22,
+        type: "specifico",
+        typeLabel: "Dir. Unione Europea",
+        text: "Il Consiglio Europeo e':",
+        options: ["Un tribunale internazionale", "Un'istituzione dell'UE composta dai capi di Stato o di governo degli Stati membri", "Un'agenzia dell'UE", "Il parlamento dell'UE"],
+        correct: 1,
+        explanation: "Il Consiglio Europeo (art. 15 TUE) e' composto dai capi di Stato o di governo degli Stati membri, dal suo presidente e dal presidente della Commissione. Definisce gli orientamenti e le priorita' politiche generali dell'UE."
+    },
+    {
+        id: 23,
+        type: "specifico",
+        typeLabel: "Pubblico Impiego",
+        text: "L'orario di lavoro ordinario del dipendente pubblico a tempo pieno e':",
+        options: ["40 ore settimanali", "38 ore settimanali", "32 ore settimanali", "36 ore settimanali"],
+        correct: 3,
+        explanation: "L'orario di lavoro ordinario del personale del comparto Funzioni Centrali e' di 36 ore settimanali, come previsto dai CCNL di comparto."
+    },
+    {
+        id: 24,
+        type: "specifico",
+        typeLabel: "Dir. Amministrativo",
+        text: "L'autocertificazione (DPR 445/2000) consente al cittadino di:",
+        options: ["Dichiarare stati, qualita' personali e fatti certificabili dalla PA", "Sostituire qualsiasi documento con una propria dichiarazione", "Evitare qualsiasi controllo successivo", "Dichiarare solo il proprio nome e cognome"],
+        correct: 0,
+        explanation: "L'autocertificazione (art. 46 DPR 445/2000) consente di sostituire certificati e atti di notorieta' con dichiarazioni sottoscritte dall'interessato, relative a stati, qualita' personali e fatti certificabili o attestabili dalla PA."
+    },
+    {
+        id: 25,
+        type: "specifico",
+        typeLabel: "Pubblico Impiego",
+        text: "La valutazione della performance individuale dei dipendenti pubblici e':",
+        options: ["Facoltativa", "Prevista solo per i dirigenti", "Obbligatoria ai sensi del D.Lgs. 150/2009", "Effettuata solo su richiesta del dipendente"],
+        correct: 2,
+        explanation: "Il D.Lgs. 150/2009 ha introdotto l'obbligo di valutare la performance individuale di tutti i dipendenti pubblici, collegandola al sistema premiante e all'erogazione degli incentivi."
+    },
+
+    // QUESITI LOGICA (26-32)
+    {
+        id: 26,
+        type: "logica",
+        typeLabel: "Ragionamento verbale",
+        text: "Individuare il termine che completa correttamente la proporzione: Medico : Paziente = Avvocato : ?",
+        options: ["Cliente", "Tribunale", "Legge", "Giudice"],
+        correct: 0,
+        explanation: "La relazione e' tra un professionista e chi usufruisce dei suoi servizi. Il medico cura il paziente, l'avvocato assiste il cliente."
+    },
+    {
+        id: 27,
+        type: "logica",
+        typeLabel: "Ragionamento verbale",
+        text: "Quale parola NON appartiene al gruppo? TAVOLO, SEDIA, ARMADIO, FINESTRA, DIVANO",
+        options: ["Tavolo", "Finestra", "Armadio", "Divano"],
+        correct: 1,
+        explanation: "Tavolo, sedia, armadio e divano sono tutti mobili (arredi). La finestra e' invece un elemento architettonico/strutturale dell'edificio."
+    },
+    {
+        id: 28,
+        type: "logica",
+        typeLabel: "Ragionamento numerico",
+        text: "Completare la serie: 5, 10, 20, 40, ?",
+        options: ["60", "80", "70", "100"],
+        correct: 1,
+        explanation: "E' una progressione geometrica con ragione 2. Ogni numero si ottiene moltiplicando il precedente per 2: 5×2=10, 10×2=20, 20×2=40, 40×2=80."
+    },
+    {
+        id: 29,
+        type: "logica",
+        typeLabel: "Ragionamento numerico",
+        text: "Un treno percorre 240 km in 3 ore. Qual e' la sua velocita' media?",
+        options: ["60 km/h", "70 km/h", "90 km/h", "80 km/h"],
+        correct: 3,
+        explanation: "La velocita' media si calcola dividendo lo spazio per il tempo: 240 km / 3 ore = 80 km/h."
+    },
+    {
+        id: 30,
+        type: "logica",
+        typeLabel: "Ragionamento critico",
+        text: "Se tutti i gatti sono mammiferi e tutti i mammiferi respirano, allora:",
+        options: ["Alcuni gatti non respirano", "Tutti i gatti respirano", "Solo i gatti respirano", "Solo i mammiferi sono gatti"],
+        correct: 1,
+        explanation: "E' un sillogismo: se A (gatti) appartiene a B (mammiferi) e B ha la proprieta' C (respirare), allora A ha la proprieta' C. Quindi tutti i gatti respirano."
+    },
+    {
+        id: 31,
+        type: "logica",
+        typeLabel: "Ragionamento verbale",
+        text: "CALDO sta a FREDDO come GIORNO sta a:",
+        options: ["Notte", "Sole", "Luce", "Sera"],
+        correct: 0,
+        explanation: "La relazione e' di antonimia (contrari). Caldo e freddo sono opposti, cosi' come giorno e notte sono opposti."
+    },
+    {
+        id: 32,
+        type: "logica",
+        typeLabel: "Ragionamento numerico",
+        text: "Quale numero manca? 3, 6, 12, 24, ?",
+        options: ["36", "30", "48", "42"],
+        correct: 2,
+        explanation: "E' una progressione geometrica con ragione 2. Ogni numero raddoppia: 3×2=6, 6×2=12, 12×2=24, 24×2=48."
+    },
+
+    // QUESITI SITUAZIONALI (33-40)
+    {
+        id: 33,
+        type: "situazionale",
+        typeLabel: "Situazionale",
+        text: "Scopri che un nuovo software introdotto nell'ufficio ha delle funzionalita' che potrebbero migliorare il lavoro del team, ma nessuno le conosce. Come ti comporti?",
+        options: [
+            "Non dici nulla perche' non e' compito tuo formare i colleghi",
+            "Mandi un'email al dirigente chiedendo un corso di formazione esterno",
+            "Ti proponi di organizzare una breve sessione informativa per condividere le tue scoperte",
+            "Usi le funzionalita' solo tu per distinguerti dagli altri"
+        ],
+        correct: 2,
+        scoring: [0, 0.375, 0.75, 0],
+        explanation: "Proporsi di condividere le conoscenze dimostra spirito di squadra e proattivita'. Organizzare una sessione informativa e' un modo efficace per migliorare la produttivita' di tutto il team."
+    },
+    {
+        id: 34,
+        type: "situazionale",
+        typeLabel: "Situazionale",
+        text: "Un collega ti chiede di coprirlo per un ritardo, dicendoti di segnare che e' arrivato in orario. Come reagisci?",
+        options: [
+            "Rifiuti spiegando che non puoi attestare il falso",
+            "Accetti per solidarieta' tra colleghi",
+            "Lo segnali immediatamente al dirigente",
+            "Accetti ma chiedi che lui faccia lo stesso per te in futuro"
+        ],
+        correct: 0,
+        scoring: [0.75, 0, 0.375, 0],
+        explanation: "Rifiutare educatamente e' la risposta corretta. Attestare falsamente la presenza di un collega e' un illecito disciplinare e potenzialmente un reato. La solidarieta' non giustifica comportamenti scorretti."
+    },
+    {
+        id: 35,
+        type: "situazionale",
+        typeLabel: "Situazionale",
+        text: "Durante un lavoro di gruppo, noti che un membro del team non sta contribuendo come dovrebbe. Come gestisci la situazione?",
+        options: [
+            "Fai tutto tu per garantire il risultato finale",
+            "Lo denunci al capo progetto senza parlare prima con lui",
+            "Lo critichi durante la prossima riunione di gruppo",
+            "Parli con il collega in privato per capire se ci sono difficolta' e come supportarlo"
+        ],
+        correct: 3,
+        scoring: [0.375, 0, 0, 0.75],
+        explanation: "Parlare in privato permette di comprendere eventuali difficolta' e trovare soluzioni. Potrebbe esserci un problema personale o professionale che impedisce al collega di contribuire adeguatamente."
+    },
+    {
+        id: 36,
+        type: "situazionale",
+        typeLabel: "Situazionale",
+        text: "Un utente si lamenta per i tempi di attesa troppo lunghi, anche se la procedura sta seguendo i tempi previsti dalla normativa. Cosa fai?",
+        options: [
+            "Gli dici che non puoi farci nulla e che deve solo aspettare",
+            "Gli spieghi gentilmente i tempi previsti dalla normativa e lo aggiorni sullo stato della pratica",
+            "Prometti che accelererai la pratica anche se non puoi farlo",
+            "Lo inviti a presentare un reclamo formale"
+        ],
+        correct: 1,
+        scoring: [0, 0.75, 0, 0.375],
+        explanation: "Spiegare gentilmente la normativa e aggiornare l'utente dimostra professionalita' e trasparenza. L'utente apprezzer la comunicazione chiara anche se i tempi non cambiano."
+    },
+    {
+        id: 37,
+        type: "situazionale",
+        typeLabel: "Situazionale",
+        text: "Ti viene proposta una promozione che comporta piu' responsabilita' e un trasferimento in un'altra sede. Come ti comporti?",
+        options: [
+            "Rifiuti immediatamente perche' non vuoi cambiare sede",
+            "Accetti immediatamente senza riflettere",
+            "Accetti solo se viene aumentato lo stipendio",
+            "Chiedi tempo per valutare l'offerta considerando tutti gli aspetti coinvolti"
+        ],
+        correct: 3,
+        scoring: [0, 0.375, 0, 0.75],
+        explanation: "Chiedere tempo per valutare e' la risposta piu' equilibrata. Una decisione importante come un trasferimento richiede una riflessione attenta su tutti gli aspetti personali e professionali."
+    },
+    {
+        id: 38,
+        type: "situazionale",
+        typeLabel: "Situazionale",
+        text: "Durante una pausa, senti alcuni colleghi parlare male del dirigente. Come ti comporti?",
+        options: [
+            "Partecipi alla conversazione aggiungendo tue critiche",
+            "Riferisci tutto al dirigente",
+            "Ti allontani senza commentare e non riferisci a nessuno",
+            "Difendi apertamente il dirigente criticando i colleghi"
+        ],
+        correct: 2,
+        scoring: [0, 0.375, 0.75, 0],
+        explanation: "Allontanarsi senza partecipare e' la scelta piu' equilibrata. Non alimenta il pettegolezzo ne' crea conflitti. Riferire al dirigente sarebbe sproporzionato per una conversazione informale."
+    },
+    {
+        id: 39,
+        type: "situazionale",
+        typeLabel: "Situazionale",
+        text: "Sei in ritardo con una consegna per cause non dipendenti da te (es. colleghi non hanno fornito dati). Come ti comporti?",
+        options: [
+            "Informi tempestivamente il responsabile spiegando la situazione e proponendo soluzioni",
+            "Consegni in ritardo senza spiegazioni",
+            "Incolpi pubblicamente i colleghi per il ritardo",
+            "Consegni un lavoro incompleto pur di rispettare la scadenza"
+        ],
+        correct: 0,
+        scoring: [0.75, 0, 0, 0.375],
+        explanation: "Informare tempestivamente il responsabile e proporre soluzioni dimostra professionalita' e trasparenza. Permette di gestire la situazione senza creare conflitti con i colleghi."
+    },
+    {
+        id: 40,
+        type: "situazionale",
+        typeLabel: "Situazionale",
+        text: "Un collega anziano fa fatica ad usare il nuovo sistema informatico e rallenta il lavoro. Come ti comporti?",
+        options: [
+            "Ti lamenti con gli altri colleghi della sua lentezza",
+            "Ti offri di aiutarlo e di mostrargli le procedure con pazienza",
+            "Suggerisci al dirigente di sostituirlo con qualcuno piu' giovane",
+            "Fai il suo lavoro al posto suo senza dirgli nulla"
+        ],
+        correct: 1,
+        scoring: [0, 0.75, 0, 0.375],
+        explanation: "Offrirsi di aiutare con pazienza e' la risposta piu' professionale e umana. Valorizza l'esperienza del collega e promuove un ambiente di lavoro collaborativo e inclusivo."
+    }
+];
+
+// ==================== GAME STATE ====================
+let currentQuestion = 0;
+let userAnswers = new Array(questions.length).fill(null);
+let timeRemaining = 60 * 60; // 60 minuti in secondi
+let timerInterval = null;
+let examStartTime = null;
+let examEndTime = null;
+let isPaused = false;
+
+// ==================== FUNCTIONS ====================
+
+function printQuiz() {
+    const printContainer = document.getElementById('printContainer');
+    printContainer.innerHTML = `
+        <div class="header-exam" style="margin-bottom: 30px;">
+            <h1>CONCORSO MIC 1800 ASSISTENTI</h1>
+            <h2>Simulazione Prova Scritta - Modulo 2</h2>
+        </div>
+        <div style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+            <p><strong>40 quesiti</strong> | <strong>60 minuti</strong> | <strong>Soglia: 21/30</strong></p>
+        </div>
+    `;
+
+    questions.forEach((q, index) => {
+        printContainer.innerHTML += `
+            <div class="question-card" style="margin-bottom: 20px; page-break-inside: avoid;">
+                <div class="question-header">
+                    <span class="question-number">Domanda ${q.id}</span>
+                    <span class="question-type ${q.type}">${q.typeLabel}</span>
+                </div>
+                <div class="question-text">${q.text}</div>
+                <div class="options-list">
+                    ${q.options.map((opt, idx) => `
+                        <div class="option">
+                            <span class="option-letter">${String.fromCharCode(65 + idx)})</span>
+                            <span class="option-text">${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    });
+
+    window.print();
+}
+
+function startExam() {
+    document.getElementById('mainContainer').classList.remove('start-mode');
+    document.getElementById('mainContainer').classList.add('exam-mode');
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('examScreen').classList.remove('hidden');
+
+    examStartTime = new Date();
+    renderQuestion();
+    startTimer();
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            submitExam();
+        }
+
+        if (timeRemaining <= 300) { // 5 minuti
+            document.getElementById('timerBox').classList.add('warning');
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    document.getElementById('timer').textContent =
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    const pauseBtn = document.getElementById('pauseBtn');
+    const pauseOverlay = document.getElementById('pauseOverlay');
+
+    if (isPaused) {
+        clearInterval(timerInterval);
+        pauseBtn.innerHTML = '&#9658; Riprendi';
+        pauseBtn.classList.add('paused');
+        pauseOverlay.classList.remove('hidden');
+    } else {
+        startTimer();
+        pauseBtn.innerHTML = '&#10074;&#10074; Pausa';
+        pauseBtn.classList.remove('paused');
+        pauseOverlay.classList.add('hidden');
+    }
+}
+
+function renderQuestion() {
+    const q = questions[currentQuestion];
+    const container = document.getElementById('questionsContainer');
+
+    let typeClass = q.type;
+
+    container.innerHTML = `
+        <div class="question-card current">
+            <div class="question-header">
+                <span class="question-number">Domanda ${q.id}</span>
+                <span class="question-type ${typeClass}">${q.typeLabel}</span>
+            </div>
+            <div class="question-text">${q.text}</div>
+            <div class="options-list">
+                ${q.options.map((opt, idx) => `
+                    <div class="option ${userAnswers[currentQuestion] === idx ? 'selected' : ''}"
+                         onclick="selectAnswer(${idx})">
+                        <span class="option-letter">${String.fromCharCode(65 + idx)})</span>
+                        <span class="option-text">${opt}</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    updateStats();
+    updateExplanationPanel();
+}
+
+function updateExplanationPanel() {
+    const q = questions[currentQuestion];
+    const container = document.getElementById('explanationContent');
+    const hasAnswer = userAnswers[currentQuestion] !== null;
+
+    if (!hasAnswer) {
+        container.innerHTML = '<p class="no-answer">Seleziona una risposta per vedere la spiegazione</p>';
+        return;
+    }
+
+    const correctLetter = String.fromCharCode(65 + q.correct);
+    const correctText = q.options[q.correct];
+
+    container.innerHTML = `
+        <div class="explanation-content">
+            <div class="correct-answer-box">
+                <div class="label">Risposta corretta</div>
+                <div class="answer">${correctLetter}) ${correctText}</div>
+            </div>
+            ${q.explanation ? `<p>${q.explanation}</p>` : '<p>Nessuna spiegazione disponibile.</p>'}
+        </div>
+    `;
+}
+
+function selectAnswer(index) {
+    userAnswers[currentQuestion] = index;
+    renderQuestion();
+}
+
+function goToQuestion(index) {
+    currentQuestion = index;
+    renderQuestion();
+}
+
+function previousQuestion() {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+    }
+}
+
+function nextQuestion() {
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+    }
+}
+
+function updateStats() {
+    const answered = userAnswers.filter(a => a !== null).length;
+    const skipped = questions.length - answered;
+    const progress = Math.round((answered / questions.length) * 100);
+
+    document.getElementById('answeredCount').textContent = `${answered}/${questions.length}`;
+    document.getElementById('skippedCount').textContent = skipped;
+    document.getElementById('progressText').textContent = `${progress}%`;
+    document.getElementById('progressFill').style.width = `${progress}%`;
+}
+
+function submitExam() {
+    if (timerInterval) clearInterval(timerInterval);
+    examEndTime = new Date();
+
+    const confirmSubmit = timeRemaining > 0 ?
+        confirm('Sei sicuro di voler consegnare l\'esame?') : true;
+
+    if (!confirmSubmit) {
+        startTimer();
+        return;
+    }
+
+    calculateResults();
+}
+
+function calculateResults() {
+    let correct = 0;
+    let wrong = 0;
+    let notAnswered = 0;
+    let totalScore = 0;
+
+    // Category stats
+    const categoryStats = {
+        comune: { correct: 0, wrong: 0, total: 0, label: 'Quesiti Comuni', topics: [] },
+        specifico: { correct: 0, wrong: 0, total: 0, label: 'Quesiti Specifici', topics: [] },
+        logica: { correct: 0, wrong: 0, total: 0, label: 'Quesiti Logica', topics: [] },
+        situazionale: { correct: 0, wrong: 0, total: 0, label: 'Quesiti Situazionali', topics: [] }
+    };
+
+    questions.forEach((q, index) => {
+        const answer = userAnswers[index];
+        const cat = categoryStats[q.type];
+        cat.total++;
+
+        if (answer === null) {
+            notAnswered++;
+            cat.wrong++;
+            cat.topics.push({ label: q.typeLabel, wrong: true });
+        } else if (q.type === 'situazionale') {
+            totalScore += q.scoring[answer];
+            if (answer === q.correct) {
+                correct++;
+                cat.correct++;
+            } else if (q.scoring[answer] === 0) {
+                wrong++;
+                cat.wrong++;
+                cat.topics.push({ label: q.typeLabel, wrong: true });
+            }
+        } else {
+            if (answer === q.correct) {
+                correct++;
+                cat.correct++;
+                totalScore += 0.75;
+            } else {
+                wrong++;
+                cat.wrong++;
+                cat.topics.push({ label: q.typeLabel, wrong: true });
+                totalScore -= 0.25;
+            }
+        }
+    });
+
+    totalScore = Math.round(totalScore * 100) / 100;
+    if (totalScore < 0) totalScore = 0;
+
+    const timeUsed = Math.round((examEndTime - examStartTime) / 1000);
+    const minutesUsed = Math.floor(timeUsed / 60);
+    const secondsUsed = timeUsed % 60;
+
+    // Show results screen
+    document.getElementById('examScreen').classList.add('hidden');
+    document.getElementById('resultsScreen').classList.add('show');
+
+    const passed = totalScore >= 21;
+
+    // Animate circular score
+    const scoreCircle = document.getElementById('scoreCircle');
+    const circumference = 264;
+    const scorePercent = Math.min(totalScore / 30, 1);
+    const offset = circumference - (scorePercent * circumference);
+
+    scoreCircle.classList.remove('passed', 'failed');
+    scoreCircle.classList.add(passed ? 'passed' : 'failed');
+    setTimeout(() => {
+        scoreCircle.style.strokeDashoffset = offset;
+    }, 100);
+
+    document.getElementById('finalScore').textContent = totalScore;
+    document.getElementById('examStatus').textContent = passed ? 'IDONEO' : 'NON IDONEO';
+    document.getElementById('examStatus').className = `results-status ${passed ? 'passed' : 'failed'}`;
+
+    document.getElementById('correctCount').textContent = correct;
+    document.getElementById('wrongCount').textContent = wrong;
+    document.getElementById('notAnsweredCount').textContent = notAnswered;
+    document.getElementById('timeUsed').textContent = `${minutesUsed}:${secondsUsed.toString().padStart(2, '0')}`;
+
+    renderCategoryBreakdown(categoryStats);
+    renderRecommendations(categoryStats);
+    renderReview();
+}
+
+function renderCategoryBreakdown(stats) {
+    const container = document.getElementById('categoryBreakdown');
+    container.innerHTML = '';
+
+    const categories = [
+        { key: 'comune', icon: '&#128214;' },
+        { key: 'specifico', icon: '&#128188;' },
+        { key: 'logica', icon: '&#129504;' },
+        { key: 'situazionale', icon: '&#128101;' }
+    ];
+
+    categories.forEach(cat => {
+        const s = stats[cat.key];
+        const percent = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+        let fillClass = 'poor';
+        if (percent >= 80) fillClass = 'excellent';
+        else if (percent >= 60) fillClass = 'good';
+        else if (percent >= 40) fillClass = 'medium';
+
+        container.innerHTML += `
+            <div class="category-item">
+                <div class="category-header">
+                    <span class="category-name">${cat.icon} ${s.label}</span>
+                    <span class="category-score">${s.correct}/${s.total} (${percent}%)</span>
+                </div>
+                <div class="category-bar">
+                    <div class="category-fill ${fillClass}" style="width: ${percent}%"></div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function renderRecommendations(stats) {
+    const container = document.getElementById('recommendationsContainer');
+    container.innerHTML = '';
+
+    const recommendations = [];
+
+    // Analyze each category
+    const catInfo = {
+        comune: {
+            label: 'Diritto Amministrativo e Normativa',
+            desc: 'Ripassare L. 241/1990, D.Lgs. 33/2013, CAD e diritto penale della PA.',
+            link: 'https://fracabu.github.io/guida-mic/#materie'
+        },
+        specifico: {
+            label: 'Contabilita\' e Diritto UE',
+            desc: 'Approfondire L. 196/2009, D.Lgs. 165/2001 e istituzioni europee.',
+            link: 'https://fracabu.github.io/guida-mic/#materie'
+        },
+        logica: {
+            label: 'Ragionamento Logico',
+            desc: 'Esercitarsi con serie numeriche, analogie verbali e sillogismi.',
+            link: 'https://fracabu.github.io/guida-mic/#banche-dati'
+        },
+        situazionale: {
+            label: 'Quesiti Situazionali',
+            desc: 'Rivedere il codice di comportamento e le soft skills richieste.',
+            link: 'https://fracabu.github.io/guida-mic/#consigli'
+        }
+    };
+
+    Object.keys(stats).forEach(key => {
+        const s = stats[key];
+        const percent = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+        const info = catInfo[key];
+
+        if (percent < 50) {
+            recommendations.push({
+                type: 'critical',
+                icon: '&#9888;',
+                title: `Attenzione: ${info.label}`,
+                desc: `Hai risposto correttamente solo al ${percent}% dei quesiti. ${info.desc}`,
+                link: info.link
+            });
+        } else if (percent < 70) {
+            recommendations.push({
+                type: 'warning',
+                icon: '&#128161;',
+                title: `Da migliorare: ${info.label}`,
+                desc: `${percent}% di risposte corrette. Continua a studiare per consolidare. ${info.desc}`,
+                link: info.link
+            });
+        }
+    });
+
+    // Add success message if doing well
+    const totalCorrect = Object.values(stats).reduce((sum, s) => sum + s.correct, 0);
+    const totalQuestions = Object.values(stats).reduce((sum, s) => sum + s.total, 0);
+    const overallPercent = Math.round((totalCorrect / totalQuestions) * 100);
+
+    if (overallPercent >= 70) {
+        recommendations.unshift({
+            type: 'success',
+            icon: '&#127942;',
+            title: 'Ottimo lavoro!',
+            desc: `Hai risposto correttamente al ${overallPercent}% delle domande. Continua cosi\' per consolidare la preparazione.`,
+            link: null
+        });
+    }
+
+    if (recommendations.length === 0) {
+        recommendations.push({
+            type: 'warning',
+            icon: '&#128218;',
+            title: 'Continua a studiare',
+            desc: 'Rivedi tutte le materie per migliorare il tuo punteggio.',
+            link: 'https://fracabu.github.io/guida-mic/'
+        });
+    }
+
+    recommendations.forEach(rec => {
+        container.innerHTML += `
+            <div class="recommendation-item ${rec.type}">
+                <div class="recommendation-icon">${rec.icon}</div>
+                <div class="recommendation-content">
+                    <h4>${rec.title}</h4>
+                    <p>${rec.desc}</p>
+                    ${rec.link ? `<a href="${rec.link}" target="_blank" class="recommendation-link">Vai ai materiali &#8594;</a>` : ''}
+                </div>
+            </div>
+        `;
+    });
+}
+
+function toggleReview() {
+    const container = document.getElementById('reviewContainer');
+    const btn = document.querySelector('.review-toggle');
+    if (container.classList.contains('show')) {
+        container.classList.remove('show');
+        btn.textContent = 'Mostra Dettagli';
+    } else {
+        container.classList.add('show');
+        btn.textContent = 'Nascondi Dettagli';
+    }
+}
+
+function renderReview() {
+    const container = document.getElementById('reviewContainer');
+    container.innerHTML = '';
+
+    questions.forEach((q, index) => {
+        const answer = userAnswers[index];
+        const isCorrect = answer === q.correct;
+        const isSkipped = answer === null;
+
+        let cardClass = 'question-card';
+        if (isSkipped) cardClass += '';
+        else if (isCorrect) cardClass += ' answered';
+
+        container.innerHTML += `
+            <div class="${cardClass}" style="border-left-color: ${isSkipped ? '#94a3b8' : (isCorrect ? '#10b981' : '#ef4444')}">
+                <div class="question-header">
+                    <span class="question-number">Domanda ${q.id}</span>
+                    <span class="question-type ${q.type}">${q.typeLabel}</span>
+                    <span style="margin-left: auto; font-weight: 600; color: ${isSkipped ? '#94a3b8' : (isCorrect ? '#10b981' : '#ef4444')}">
+                        ${isSkipped ? 'Non risposta' : (isCorrect ? 'Corretta' : 'Errata')}
+                    </span>
+                </div>
+                <div class="question-text">${q.text}</div>
+                <div class="options-list">
+                    ${q.options.map((opt, idx) => {
+                        let optClass = 'option';
+                        if (idx === q.correct) optClass += ' correct';
+                        else if (idx === answer && idx !== q.correct) optClass += ' wrong';
+
+                        let icon = '';
+                        if (idx === q.correct) icon = '<span class="option-icon">&#10003;</span>';
+                        else if (idx === answer && idx !== q.correct) icon = '<span class="option-icon">&#10007;</span>';
+
+                        return `
+                            <div class="${optClass}">
+                                <span class="option-letter">${String.fromCharCode(65 + idx)})</span>
+                                <span class="option-text">${opt}</span>
+                                ${icon}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    });
+}
+
+function restartExam() {
+    // Reset state
+    currentQuestion = 0;
+    userAnswers = new Array(questions.length).fill(null);
+    timeRemaining = 60 * 60;
+    examStartTime = null;
+    examEndTime = null;
+
+    // Reset UI
+    document.getElementById('resultsScreen').classList.remove('show');
+    document.getElementById('timerBox').classList.remove('warning');
+    document.getElementById('startScreen').classList.remove('hidden');
+    document.getElementById('mainContainer').classList.remove('exam-mode');
+    document.getElementById('mainContainer').classList.add('start-mode');
+}
+
+// ==================== THEME TOGGLE ====================
+function toggleTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+
+    if (html.getAttribute('data-theme') === 'dark') {
+        html.removeAttribute('data-theme');
+        btn.innerHTML = '&#9790; Dark';
+        localStorage.setItem('theme', 'light');
+    } else {
+        html.setAttribute('data-theme', 'dark');
+        btn.innerHTML = '&#9788; Light';
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Load saved theme on page load
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggle').innerHTML = '&#9788; Light';
+    }
+})();
+</script>
+
+</body>
+</html>
