@@ -409,39 +409,50 @@
         pdfContainer.appendChild(clone);
 
         // Add to document - must be visible for html2canvas to work
-        pdfContainer.style.position = 'absolute';
+        pdfContainer.style.position = 'fixed';
         pdfContainer.style.top = '0';
         pdfContainer.style.left = '0';
         pdfContainer.style.width = '210mm';
         pdfContainer.style.zIndex = '9999';
         pdfContainer.style.background = 'white';
+        pdfContainer.style.padding = '20px';
+        pdfContainer.style.overflow = 'visible';
         document.body.appendChild(pdfContainer);
         window.scrollTo(0, 0);
 
-        const opt = {
-            margin: [10, 10, 10, 10],
-            filename: 'Riassunto_Codice_Beni_Culturali_DLgs_42-2004.pdf',
-            image: { type: 'jpeg', quality: 0.95 },
-            html2canvas: {
-                scale: 2,
-                useCORS: true,
-                logging: false
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css'], before: '.page-break' }
-        };
+        // Wait for content to render before capturing
+        setTimeout(() => {
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: 'Riassunto_Codice_Beni_Culturali_DLgs_42-2004.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: pdfContainer.scrollWidth,
+                    windowHeight: pdfContainer.scrollHeight
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css'], before: '.page-break' }
+            };
 
-        html2pdf().set(opt).from(pdfContainer).save().then(() => {
-            document.body.removeChild(pdfContainer);
-            btn.innerHTML = '&#128229; Scarica PDF';
-            btn.disabled = false;
-        }).catch(err => {
-            console.error('PDF Error:', err);
-            document.body.removeChild(pdfContainer);
-            btn.innerHTML = '&#128229; Scarica PDF';
-            btn.disabled = false;
-            alert('Errore nella generazione del PDF. Riprova.');
-        });
+            html2pdf().set(opt).from(pdfContainer).save().then(() => {
+                document.body.removeChild(pdfContainer);
+                btn.innerHTML = '&#128229; Scarica PDF';
+                btn.disabled = false;
+            }).catch(err => {
+                console.error('PDF Error:', err);
+                document.body.removeChild(pdfContainer);
+                btn.innerHTML = '&#128229; Scarica PDF';
+                btn.disabled = false;
+                alert('Errore nella generazione del PDF. Riprova.');
+            });
+        }, 500);
     }
     </script>
 </body>
