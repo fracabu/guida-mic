@@ -973,24 +973,85 @@
             btn.disabled = true;
 
             const section = document.getElementById('codice-beni-culturali');
-
-            // Create a clone to avoid modifying the original
             const clone = section.cloneNode(true);
+
             // Hide buttons in clone
-            clone.querySelectorAll('button').forEach(b => b.style.display = 'none');
+            clone.querySelectorAll('button').forEach(b => b.remove());
+
+            const pdfContainer = document.createElement('div');
+            pdfContainer.style.cssText = `
+                width: 190mm;
+                max-width: 190mm;
+                padding: 0;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+                font-size: 11pt;
+                line-height: 1.5;
+                color: #1e293b;
+                background: white;
+            `;
+
+            const header = document.createElement('div');
+            header.innerHTML = `
+                <h1 style="color: #4f46e5; font-size: 18pt; margin-bottom: 5mm; border-bottom: 2px solid #4f46e5; padding-bottom: 3mm;">
+                    Codice dei Beni Culturali - D.Lgs. 42/2004
+                </h1>
+                <p style="color: #64748b; font-size: 9pt; margin-bottom: 8mm;">Riassunto per lo studio - MIC 1800 Assistenti</p>
+            `;
+            pdfContainer.appendChild(header);
+
+            clone.style.cssText = 'background: white; padding: 0;';
+
+            // Fix tables
+            clone.querySelectorAll('table').forEach(table => {
+                table.style.cssText = 'width: 100%; font-size: 9pt; page-break-inside: avoid;';
+            });
+            clone.querySelectorAll('th, td').forEach(cell => {
+                cell.style.cssText = 'padding: 6px 8px; font-size: 9pt;';
+            });
+
+            // Fix boxes
+            clone.querySelectorAll('.box, .card').forEach(box => {
+                box.style.cssText += 'page-break-inside: avoid; margin: 4mm 0; padding: 4mm;';
+            });
+
+            // Fix headings
+            clone.querySelectorAll('h2').forEach(h => {
+                h.style.cssText = 'color: #4f46e5; font-size: 14pt; margin-top: 6mm; margin-bottom: 3mm; page-break-after: avoid;';
+            });
+            clone.querySelectorAll('h3').forEach(h => {
+                h.style.cssText = 'font-size: 12pt; margin-top: 4mm; margin-bottom: 2mm; page-break-after: avoid;';
+            });
+
+            pdfContainer.appendChild(clone);
+            pdfContainer.style.position = 'absolute';
+            pdfContainer.style.left = '-9999px';
+            document.body.appendChild(pdfContainer);
 
             const opt = {
                 margin: [10, 10, 10, 10],
                 filename: 'Riassunto_Codice_Beni_Culturali_DLgs_42-2004.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true,
+                    width: 190 * 3.78,
+                    windowWidth: 190 * 3.78
+                },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                pagebreak: { mode: ['avoid-all', 'css'], before: '.page-break' }
             };
 
-            html2pdf().set(opt).from(clone).save().then(() => {
+            html2pdf().set(opt).from(pdfContainer).save().then(() => {
+                document.body.removeChild(pdfContainer);
                 btn.innerHTML = '&#128229; Scarica PDF';
                 btn.disabled = false;
+            }).catch(err => {
+                console.error('PDF Error:', err);
+                document.body.removeChild(pdfContainer);
+                btn.innerHTML = '&#128229; Scarica PDF';
+                btn.disabled = false;
+                alert('Errore nella generazione del PDF. Riprova.');
             });
         }
     </script>
