@@ -104,11 +104,15 @@
             color: rgba(255,255,255,0.9);
         }
 
-        /* PDF BUTTON */
-        .pdf-btn {
+        /* HEADER BUTTONS */
+        .header-buttons {
             position: absolute;
             top: 15px;
             right: 15px;
+            display: flex;
+            gap: 8px;
+        }
+        .pdf-btn, .back-btn {
             padding: 8px 14px;
             background: rgba(255,255,255,0.15);
             border: 1px solid rgba(255,255,255,0.4);
@@ -117,8 +121,9 @@
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
+            text-decoration: none;
         }
-        .pdf-btn:hover {
+        .pdf-btn:hover, .back-btn:hover {
             background: rgba(255,255,255,0.25);
         }
 
@@ -881,7 +886,7 @@
         /* PRINT STYLES */
         @media print {
             body { background: white; }
-            .stats-bar, .action-bar, .question-nav, .btn, .pdf-btn { display: none !important; }
+            .stats-bar, .action-bar, .question-nav, .btn, .header-buttons { display: none !important; }
             .container { max-width: 100%; padding: 0; }
             .container.start-mode { min-height: auto; }
             .question-card {
@@ -971,7 +976,8 @@
             .header-exam { padding: 16px; padding-top: 45px; margin-bottom: 16px; }
             .header-exam h1 { font-size: 1.2rem; }
             .header-exam h2 { font-size: 0.9rem; }
-            .pdf-btn { position: absolute; top: 10px; right: 10px; padding: 6px 10px; font-size: 0.75rem; }
+            .header-buttons { top: 10px; right: 10px; }
+            .pdf-btn, .back-btn { padding: 6px 10px; font-size: 0.75rem; }
             .exam-info { padding: 16px; }
             .exam-info-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .exam-info-item { padding: 14px 10px; }
@@ -990,8 +996,9 @@
             .header-exam { padding: 14px; padding-top: 45px; margin-bottom: 12px; }
             .header-exam h1 { font-size: 1rem; }
             .header-exam h2 { font-size: 0.8rem; }
-            .pdf-btn { padding: 5px 8px; font-size: 0.7rem; }
+            .pdf-btn, .back-btn { padding: 5px 8px; font-size: 0.7rem; }
             .theme-toggle { padding: 5px 8px; font-size: 0.7rem; top: 10px; left: 10px; }
+            .header-buttons { gap: 4px; }
             .exam-info { padding: 12px; }
             .exam-info-grid { gap: 8px; }
             .exam-info-item { padding: 10px 8px; }
@@ -1065,7 +1072,10 @@
     <!-- HEADER -->
     <div class="header-exam">
         <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">&#9790; Dark</button>
-        <button class="pdf-btn" onclick="printQuiz()">Stampa PDF</button>
+        <div class="header-buttons">
+            <a href="https://fracabu.github.io/guida-mic/" class="back-btn">&#8592; Guida</a>
+            <button class="pdf-btn" onclick="printQuiz()">Stampa PDF</button>
+        </div>
         <h1>CONCORSO MIC 1800 ASSISTENTI</h1>
         <h2>Simulazione Prova Scritta - Modulo 2</h2>
     </div>
