@@ -817,9 +817,87 @@
         .legend-dot.skipped { background: #94a3b8; }
         #reviewContainer {
             display: none;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
         }
         #reviewContainer.show {
             display: block;
+        }
+        .review-question {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+        }
+        .review-question.correct { border-left-color: #10b981; }
+        .review-question.wrong { border-left-color: #ef4444; }
+        .review-question.skipped { border-left-color: #94a3b8; }
+        .review-question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .review-question-num {
+            background: var(--accent-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .review-question-type {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+        }
+        .review-question-status {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .review-question-status.correct { color: #10b981; }
+        .review-question-status.wrong { color: #ef4444; }
+        .review-question-status.skipped { color: #94a3b8; }
+        .review-question-text {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .review-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .review-option {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .review-option.correct-answer {
+            background: #dcfce7;
+            border-color: #10b981;
+            color: #166534;
+        }
+        .review-option.wrong-answer {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+        .review-option-letter {
+            font-weight: 700;
+            flex-shrink: 0;
         }
 
         /* ACTION BUTTONS */
@@ -1264,27 +1342,24 @@
             </div>
         </div>
 
-        <!-- BOTTOM PANELS -->
-        <div class="bottom-panels">
-            <!-- Recommendations -->
-            <div class="recommendations-card">
-                <h3>&#128161; Consigli di Studio</h3>
-                <div class="recommendations-list" id="recommendationsContainer"></div>
-            </div>
+        <!-- RECOMMENDATIONS -->
+        <div class="recommendations-card" style="margin-bottom: 20px;">
+            <h3>&#128161; Consigli di Studio</h3>
+            <div class="recommendations-list" id="recommendationsContainer"></div>
+        </div>
 
-            <!-- Review -->
-            <div class="review-card">
-                <div class="review-header">
-                    <h3>&#128269; Revisione</h3>
-                    <button class="review-toggle" onclick="toggleReview()">Mostra</button>
-                </div>
-                <div class="review-legend">
-                    <div class="legend-item"><div class="legend-dot correct"></div><span>Corretta</span></div>
-                    <div class="legend-item"><div class="legend-dot wrong"></div><span>Errata</span></div>
-                    <div class="legend-item"><div class="legend-dot skipped"></div><span>Saltata</span></div>
-                </div>
-                <div id="reviewContainer"></div>
+        <!-- REVIEW SECTION - Full Width -->
+        <div class="review-card" style="margin-bottom: 20px;">
+            <div class="review-header">
+                <h3>&#128269; Revisione Risposte</h3>
+                <button class="review-toggle" onclick="toggleReview()">Mostra Dettagli</button>
             </div>
+            <div class="review-legend">
+                <div class="legend-item"><div class="legend-dot correct"></div><span>Corretta</span></div>
+                <div class="legend-item"><div class="legend-dot wrong"></div><span>Errata</span></div>
+                <div class="legend-item"><div class="legend-dot skipped"></div><span>Saltata</span></div>
+            </div>
+            <div id="reviewContainer"></div>
         </div>
 
         <!-- ACTIONS -->
@@ -2165,35 +2240,27 @@ function renderReview() {
         const isCorrect = answer === q.correct;
         const isSkipped = answer === null;
 
-        let cardClass = 'question-card';
-        if (isSkipped) cardClass += '';
-        else if (isCorrect) cardClass += ' answered';
+        const statusClass = isSkipped ? 'skipped' : (isCorrect ? 'correct' : 'wrong');
+        const statusText = isSkipped ? 'Saltata' : (isCorrect ? 'Corretta' : 'Errata');
 
         container.innerHTML += `
-            <div class="${cardClass}" style="border-left-color: ${isSkipped ? '#94a3b8' : (isCorrect ? '#10b981' : '#ef4444')}">
-                <div class="question-header">
-                    <span class="question-number">Domanda ${q.id}</span>
-                    <span class="question-type ${q.type}">${q.typeLabel}</span>
-                    <span style="margin-left: auto; font-weight: 600; color: ${isSkipped ? '#94a3b8' : (isCorrect ? '#10b981' : '#ef4444')}">
-                        ${isSkipped ? 'Non risposta' : (isCorrect ? 'Corretta' : 'Errata')}
-                    </span>
+            <div class="review-question ${statusClass}">
+                <div class="review-question-header">
+                    <span class="review-question-num">D${q.id}</span>
+                    <span class="review-question-type">${q.typeLabel}</span>
+                    <span class="review-question-status ${statusClass}">${statusText}</span>
                 </div>
-                <div class="question-text">${q.text}</div>
-                <div class="options-list">
+                <div class="review-question-text">${q.text}</div>
+                <div class="review-options">
                     ${q.options.map((opt, idx) => {
-                        let optClass = 'option';
-                        if (idx === q.correct) optClass += ' correct';
-                        else if (idx === answer && idx !== q.correct) optClass += ' wrong';
-
-                        let icon = '';
-                        if (idx === q.correct) icon = '<span class="option-icon">&#10003;</span>';
-                        else if (idx === answer && idx !== q.correct) icon = '<span class="option-icon">&#10007;</span>';
+                        let optClass = 'review-option';
+                        if (idx === q.correct) optClass += ' correct-answer';
+                        else if (idx === answer && idx !== q.correct) optClass += ' wrong-answer';
 
                         return `
                             <div class="${optClass}">
-                                <span class="option-letter">${String.fromCharCode(65 + idx)})</span>
-                                <span class="option-text">${opt}</span>
-                                ${icon}
+                                <span class="review-option-letter">${String.fromCharCode(65 + idx)})</span>
+                                <span>${opt}</span>
                             </div>
                         `;
                     }).join('')}
