@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riassunto Codice Beni Culturali D.Lgs. 42/2004 | MIC 1800 Studio</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -182,6 +181,24 @@
             table { font-size: 0.8rem; }
             th, td { padding: 10px 8px; }
         }
+        @media print {
+            body { background: white; }
+            .header { display: none !important; }
+            .back-link { display: none !important; }
+            .article-header {
+                background: white !important;
+                color: #ea580c !important;
+                padding: 20px 0 !important;
+                border-bottom: 3px solid #ea580c;
+            }
+            .article-header h1 { color: #ea580c !important; font-size: 1.5rem; }
+            .article-header .meta { background: #fff7ed !important; color: #ea580c !important; }
+            .article-content { padding: 20px 0 !important; max-width: 100% !important; }
+            .summary-box, .box { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            table { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            h2, h3 { break-after: avoid; }
+        }
     </style>
 </head>
 <body>
@@ -357,102 +374,7 @@
 
     <script>
     function downloadPDF() {
-        const btn = document.getElementById('pdfBtn');
-        btn.textContent = 'Generando PDF...';
-        btn.disabled = true;
-
-        const element = document.querySelector('.article-content');
-        const clone = element.cloneNode(true);
-
-        const backLink = clone.querySelector('.back-link');
-        if (backLink) backLink.remove();
-
-        const pdfContainer = document.createElement('div');
-        pdfContainer.style.cssText = `
-            width: 190mm;
-            max-width: 190mm;
-            padding: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            font-size: 11pt;
-            line-height: 1.5;
-            color: #1e293b;
-            background: white;
-        `;
-
-        const header = document.createElement('div');
-        header.innerHTML = `
-            <h1 style="color: #ea580c; font-size: 18pt; margin-bottom: 5mm; border-bottom: 2px solid #ea580c; padding-bottom: 3mm;">
-                Codice dei Beni Culturali - D.Lgs. 42/2004
-            </h1>
-            <p style="color: #64748b; font-size: 9pt; margin-bottom: 8mm;">Riassunto per lo studio - MIC 1800 Assistenti</p>
-        `;
-        pdfContainer.appendChild(header);
-
-        clone.style.cssText = 'background: white; padding: 0;';
-
-        clone.querySelectorAll('table').forEach(table => {
-            table.style.cssText = 'width: 100%; font-size: 9pt; page-break-inside: avoid;';
-        });
-        clone.querySelectorAll('th, td').forEach(cell => {
-            cell.style.cssText = 'padding: 6px 8px; font-size: 9pt;';
-        });
-        clone.querySelectorAll('.box, .summary-box').forEach(box => {
-            box.style.cssText += 'page-break-inside: avoid; margin: 4mm 0; padding: 4mm;';
-        });
-        clone.querySelectorAll('h2').forEach(h => {
-            h.style.cssText = 'color: #ea580c; font-size: 14pt; margin-top: 6mm; margin-bottom: 3mm; page-break-after: avoid;';
-        });
-        clone.querySelectorAll('h3').forEach(h => {
-            h.style.cssText = 'font-size: 12pt; margin-top: 4mm; margin-bottom: 2mm; page-break-after: avoid;';
-        });
-
-        pdfContainer.appendChild(clone);
-
-        // Add to document - must be visible for html2canvas to work
-        pdfContainer.style.position = 'fixed';
-        pdfContainer.style.top = '0';
-        pdfContainer.style.left = '0';
-        pdfContainer.style.width = '210mm';
-        pdfContainer.style.zIndex = '9999';
-        pdfContainer.style.background = 'white';
-        pdfContainer.style.padding = '20px';
-        pdfContainer.style.overflow = 'visible';
-        document.body.appendChild(pdfContainer);
-        window.scrollTo(0, 0);
-
-        // Wait for content to render before capturing
-        setTimeout(() => {
-            const opt = {
-                margin: [10, 10, 10, 10],
-                filename: 'Riassunto_Codice_Beni_Culturali_DLgs_42-2004.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    logging: true,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff',
-                    scrollX: 0,
-                    scrollY: 0,
-                    windowWidth: pdfContainer.scrollWidth,
-                    windowHeight: pdfContainer.scrollHeight
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css'], before: '.page-break' }
-            };
-
-            html2pdf().set(opt).from(pdfContainer).save().then(() => {
-                document.body.removeChild(pdfContainer);
-                btn.innerHTML = '&#128229; Scarica PDF';
-                btn.disabled = false;
-            }).catch(err => {
-                console.error('PDF Error:', err);
-                document.body.removeChild(pdfContainer);
-                btn.innerHTML = '&#128229; Scarica PDF';
-                btn.disabled = false;
-                alert('Errore nella generazione del PDF. Riprova.');
-            });
-        }, 500);
+        window.print();
     }
     </script>
 </body>
